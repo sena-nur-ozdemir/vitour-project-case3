@@ -147,7 +147,7 @@ Tüm projenin ekran görüntülerini detaylı incelemek için aşağıdaki başl
 </details>
 
 <details>
-<summary><b>📊 5. Excel ve PDF Rapor Çıktıları</b></summary>
+<summary><b>📊 4. Excel ve PDF Rapor Çıktıları</b></summary>
 <br>
 
 *Sistem üzerinden oluşturulan Türkçe karakter destekli profesyonel rapor çıktıları.*
