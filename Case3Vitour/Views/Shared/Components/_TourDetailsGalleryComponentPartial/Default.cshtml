@@ -1,0 +1,35 @@
+﻿@model List<Case3Vitour.Dtos.GalleryDtos.ResultGalleryByTourIdDto>
+
+<div class="tab-pane fade" id="pills-shot-gallery" role="tabpanel" aria-labelledby="pills-shot-gallery-tab" tabindex="0">
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="gallery-content-tour">
+                <!-- Fotoğrafların yan yana durmasını sağlayan Row -->
+                <div class="row">
+                    @if (Model != null && Model.Any())
+                    {
+                        foreach (var item in Model)
+                        {
+                            <!-- col-md-6 ile fotoğraflar yan yana 2'li olarak sıralanacak -->
+                            <div class="col-md-6 mb-4">
+                                <!-- data-fancybox sayesinde resme tıklanınca ekranda büyüyecek -->
+                                <a href="@item.ImageUrl" data-fancybox="gallery">
+                                    <img src="@item.ImageUrl" alt="Tur Görseli" style="width: 100%; height: 250px; object-fit: cover; border-radius: 10px;" />
+                                </a>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="col-12">
+                            <p class="text-muted">Bu tura ait galeri fotoğrafı bulunmamaktadır.</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Sağ menü (Rezervasyon kısmı vb.) aynen kalıyor -->
+        @await Component.InvokeAsync("_TourDetailsRightSidebarComponentPartial")
+    </div>
+</div>

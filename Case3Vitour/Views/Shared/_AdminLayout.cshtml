@@ -1,0 +1,804 @@
+﻿@using Microsoft.AspNetCore.Localization
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
+@{
+    var requestCultureFeature = Context.Features.Get<IRequestCultureFeature>();
+    var currentCulture = requestCultureFeature?.RequestCulture.Culture.Name ?? "en";
+    var returnUrl = Context.Request.Path + Context.Request.QueryString;
+}
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] — Vitour Admin</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+    <style>
+        /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+                                    VİTOUR PREMIUM TEAL & MINT TEMASI
+                   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+        :root {
+            --sidebar-width: 270px;
+            /* Arka Plan Tonları */
+            --bg-canvas: #f0f4f4;
+            --bg-sidebar: #ffffff;
+            --bg-topbar: #ffffff;
+            --bg-card: #ffffff;
+            --bg-hover: #f0fdfa;
+            --bg-active: #ccfbf1;
+            /* Premium Camgöbeği & Nane Tonları */
+            --accent: #0d9488;
+            --accent-light: #2dd4bf;
+            --accent-dark: #115e59;
+            --accent-glow: rgba(13, 148, 136, 0.12);
+            /* Yazı Renkleri */
+            --t1: #0f172a;
+            --t2: #334155;
+            --t3: #94a3b8;
+            /* Çizgiler */
+            --border: #e2e8f0;
+            --border-focus: var(--accent);
+            /* Genel Tasarım Değerleri */
+            --radius: 12px;
+            --radius-sm: 6px;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.04), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
+            --ease: 0.25s cubic-bezier(.4,0,.2,1);
+        }
+
+        /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+                                            RESET + BASE
+                   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg-canvas);
+            color: var(--t1);
+            min-height: 100vh;
+            display: flex;
+            overflow-x: hidden;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        button {
+            font-family: inherit;
+            cursor: pointer;
+        }
+
+        ::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+
+            ::-webkit-scrollbar-thumb:hover {
+                background: #94a3b8;
+            }
+
+        /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+                                            SIDEBAR
+                   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+        .sidebar {
+            position: fixed;
+            inset: 0 auto 0 0;
+            width: var(--sidebar-width);
+            background: var(--bg-sidebar);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            z-index: 200;
+            transition: transform var(--ease);
+            box-shadow: 2px 0 15px rgba(0,0,0,.02);
+        }
+
+        .sidebar-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 24px 20px;
+            border-bottom: 1px solid var(--border);
+            min-height: 72px;
+            flex-shrink: 0;
+        }
+
+        .brand-mark {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background: var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            flex-shrink: 0;
+            box-shadow: 0 4px 10px var(--accent-glow);
+        }
+
+        .brand-text {
+            overflow: hidden;
+            white-space: nowrap;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .brand-name {
+            font-size: 21px;
+            font-weight: 600;
+            color: var(--t1);
+            letter-spacing: -0.3px;
+            line-height: 1.1;
+        }
+
+        .brand-tag {
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            color: var(--t3);
+            margin-top: 3px;
+        }
+
+        .sidebar-scroll {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px 14px;
+        }
+
+        .nav-group {
+            margin-bottom: 20px;
+        }
+
+        .nav-label {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--t3);
+            padding: 0 12px 10px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            border-radius: var(--radius-sm);
+            color: var(--t2);
+            font-size: 14.5px;
+            font-weight: 500;
+            transition: all var(--ease);
+            margin-bottom: 4px;
+        }
+
+            .nav-item:hover {
+                background: var(--bg-hover);
+                color: var(--accent-dark);
+                transform: translateX(4px);
+            }
+
+            .nav-item.active {
+                background: var(--accent);
+                color: #ffffff;
+                box-shadow: 0 4px 12px var(--accent-glow);
+            }
+
+        .nav-icon {
+            width: 22px;
+            font-size: 16px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .nav-text {
+            flex: 1;
+            white-space: nowrap;
+        }
+
+        .sidebar-footer {
+            padding: 16px 14px;
+            border-top: 1px solid var(--border);
+            background: #f8fafc;
+        }
+
+        .user-tile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px;
+            border-radius: var(--radius-sm);
+            background: #ffffff;
+            border: 1px solid var(--border);
+            transition: border-color var(--ease);
+        }
+
+            .user-tile:hover {
+                border-color: var(--accent-light);
+            }
+
+        .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            background: var(--accent-dark);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .user-info {
+            overflow: hidden;
+            flex: 1;
+        }
+
+        .user-name {
+            font-size: 13.5px;
+            font-weight: 700;
+            color: var(--t1);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .user-role {
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--t3);
+            margin-top: 2px;
+        }
+
+        .logout-btn {
+            color: var(--t3);
+            font-size: 16px;
+            background: none;
+            border: none;
+            padding: 6px;
+            transition: color var(--ease);
+        }
+
+            .logout-btn:hover {
+                color: var(--accent);
+            }
+
+        /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+                                            MAIN WRAPPER & TOPBAR
+                   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+        .layout-main {
+            margin-left: var(--sidebar-width);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            transition: margin-left var(--ease);
+        }
+
+        .topbar {
+            height: 72px;
+            background: var(--bg-topbar);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 32px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,.01);
+        }
+
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .hamburger {
+            display: none;
+            background: none;
+            border: 1px solid var(--border);
+            color: var(--t2);
+            border-radius: var(--radius-sm);
+            width: 38px;
+            height: 38px;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            transition: all var(--ease);
+        }
+
+            .hamburger:hover {
+                background: var(--bg-hover);
+                color: var(--accent);
+                border-color: var(--accent-light);
+            }
+
+        .topbar-heading {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .topbar-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--t1);
+        }
+
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: var(--t3);
+            font-weight: 500;
+            margin-top: 2px;
+        }
+
+            .breadcrumb a {
+                color: var(--t3);
+                transition: color var(--ease);
+            }
+
+                .breadcrumb a:hover {
+                    color: var(--accent);
+                }
+
+            .breadcrumb .sep {
+                font-size: 10px;
+                opacity: 0.5;
+            }
+
+        .topbar-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .search-wrap {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--bg-canvas);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 0 16px;
+            height: 40px;
+            min-width: 240px;
+            transition: all var(--ease);
+        }
+
+            .search-wrap:focus-within {
+                border-color: var(--accent);
+                background: #fff;
+                box-shadow: 0 0 0 3px var(--accent-glow);
+            }
+
+            .search-wrap i {
+                color: var(--t3);
+                font-size: 14px;
+            }
+
+            .search-wrap input {
+                background: transparent;
+                border: none;
+                outline: none;
+                color: var(--t1);
+                font-family: inherit;
+                font-size: 14px;
+                width: 100%;
+            }
+
+        .icon-action {
+            position: relative;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #fff;
+            border: 1px solid var(--border);
+            color: var(--t2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            transition: all var(--ease);
+        }
+
+            .icon-action:hover {
+                background: var(--bg-hover);
+                color: var(--accent);
+                border-color: var(--accent-light);
+            }
+
+        .notif-pip {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--accent);
+            border: 2px solid #fff;
+        }
+
+        .visit-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 0 18px;
+            height: 40px;
+            border-radius: 20px;
+            background: var(--t1);
+            color: #fff;
+            font-size: 13.5px;
+            font-weight: 600;
+            transition: all var(--ease);
+        }
+
+            .visit-btn:hover {
+                background: var(--accent);
+                color: #fff;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 10px var(--accent-glow);
+            }
+
+        .page-content {
+            flex: 1;
+            padding: 36px 32px;
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.4);
+            z-index: 190;
+            backdrop-filter: blur(4px);
+        }
+
+        /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+                                            LANGUAGE DROPDOWN
+                   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+        .lang-drop {
+            position: relative;
+            display: inline-block;
+        }
+
+        .lang-trigger {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            border: 1px solid var(--border);
+            background: #fff;
+            border-radius: 20px;
+            cursor: pointer;
+            height: 40px;
+            transition: all var(--ease);
+            user-select: none;
+        }
+
+            .lang-trigger:hover {
+                border-color: var(--accent-light);
+                background: var(--bg-hover);
+            }
+
+            .lang-trigger img {
+                width: 22px;
+                border-radius: 2px;
+            }
+
+            .lang-trigger .chevron {
+                color: var(--t3);
+                font-size: 12px;
+                transition: transform 0.2s;
+            }
+
+        .lang-drop.open .chevron {
+            transform: rotate(180deg);
+        }
+
+        .lang-menu {
+            display: none;
+            position: absolute;
+            top: calc(100% + 10px);
+            right: 0;
+            min-width: 140px;
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+            z-index: 9999;
+            box-shadow: var(--shadow);
+            padding: 8px;
+        }
+
+        .lang-drop.open .lang-menu {
+            display: block;
+            animation: fadeIn 0.2s ease;
+        }
+
+        @@keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .lang-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-size: 13.5px;
+            font-weight: 500;
+            color: var(--t2);
+            transition: background var(--ease);
+        }
+
+            .lang-option:hover {
+                background: var(--bg-canvas);
+                color: var(--t1);
+            }
+
+            .lang-option.selected {
+                background: var(--bg-active);
+                color: var(--accent-dark);
+            }
+
+            .lang-option img {
+                width: 20px;
+                border-radius: 2px;
+            }
+
+            .lang-option .check {
+                margin-left: auto;
+                color: var(--accent);
+                display: none;
+                font-size: 12px;
+            }
+
+            .lang-option.selected .check {
+                display: block;
+            }
+
+        /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+                                            RESPONSIVE
+                   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+        @@media (max-width: 992px) {
+            .hamburger {
+                display: flex;
+            }
+
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+                .sidebar.is-open {
+                    transform: translateX(0);
+                }
+
+            .overlay.is-open {
+                display: block;
+            }
+
+            .layout-main {
+                margin-left: 0;
+            }
+
+            .search-wrap, .visit-btn span {
+                display: none;
+            }
+
+            .visit-btn {
+                padding: 0;
+                width: 40px;
+                justify-content: center;
+                border-radius: 50%;
+            }
+
+            .page-content {
+                padding: 24px 20px;
+            }
+        }
+    </style>
+
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+<body>
+
+    <div class="overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+    <aside class="sidebar" id="sidebar">
+        <a href="/Report/ReportList/" class="sidebar-brand">
+            <div class="brand-mark"><i class="fa-regular fa-compass"></i></div>
+            <div class="brand-text">
+                <div class="brand-name">Vitour</div>
+                <span class="brand-tag">@localizer["Yönetim Paneli"]</span>
+            </div>
+        </a>
+
+        <div class="sidebar-scroll">
+
+            <div class="nav-group">
+                <div class="nav-label">@localizer["İçerik Yönetimi"]</div>
+                <a href="/Tour/TourList/" class="nav-item @(ViewData["ActiveMenu"]?.ToString() == "turlar" ? "active" : "")">
+                    <span class="nav-icon"><i class="fa-solid fa-earth-americas"></i></span>
+                    <span class="nav-text">@localizer["Turlar"]</span>
+                </a>
+                <a href="/Category/CategoryList/" class="nav-item @(ViewData["ActiveMenu"]?.ToString() == "kategoriler" ? "active" : "")">
+                    <span class="nav-icon"><i class="fa-solid fa-tags"></i></span>
+                    <span class="nav-text">@localizer["Kategoriler"]</span>
+                </a>
+                <a href="/Review/ReviewList/" class="nav-item @(ViewData["ActiveMenu"]?.ToString() == "yorumlar" ? "active" : "")">
+                    <span class="nav-icon"><i class="fa-solid fa-comments"></i></span>
+                    <span class="nav-text">@localizer["Yorumlar"]</span>
+                </a>
+                <a href="/TourPlan/AllTourPlan/" class="nav-item @(ViewData["ActiveMenu"]?.ToString() == "turplanlar" ? "active" : "")">
+                    <span class="nav-icon"><i class="fa-solid fa-route"></i></span>
+                    <span class="nav-text">@localizer["Tur Planları"]</span>
+                </a>
+                <a href="/Gallery/GalleryList/" class="nav-item @(ViewData["ActiveMenu"]?.ToString() == "galeri" ? "active" : "")">
+                    <span class="nav-icon"><i class="fa-solid fa-photo-film"></i></span>
+                    <span class="nav-text">@localizer["Galeri"]</span>
+                </a>
+            </div>
+
+            <div class="nav-group">
+                <div class="nav-label">@localizer["İşlemler"]</div>
+                <a href="/Reservation/ReservationList/" class="nav-item @(ViewData["ActiveMenu"]?.ToString() == "rezervasyonlar" ? "active" : "")">
+                    <span class="nav-icon"><i class="fa-solid fa-calendar-check"></i></span>
+                    <span class="nav-text">@localizer["Rezervasyonlar"]</span>
+                </a>
+            </div>
+
+            <div class="nav-group">
+                <div class="nav-label">@localizer["Sistem"]</div>
+                <a href="/Report/ReportList/" class="nav-item @(ViewData["ActiveMenu"]?.ToString() == "raporlar" ? "active" : "")">
+                    <span class="nav-icon"><i class="fa-solid fa-chart-line"></i></span>
+                    <span class="nav-text">@localizer["Raporlar"]</span>
+                </a>
+            </div>
+        </div>
+
+        <div class="sidebar-scroll" style="display:none;"></div>
+
+        <div class="sidebar-footer">
+            <div class="user-tile">
+                <div class="avatar"><i class="fa-solid fa-user-gear"></i></div>
+                <div class="user-info">
+                    <div class="user-name">@(User?.Identity?.Name ?? "Yönetici")</div>
+                    <div class="user-role">@localizer["Admin"]</div>
+                </div>
+                <form asp-controller="Account" asp-action="Logout" method="post" style="display:inline;">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="logout-btn" title="Çıkış Yap">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </aside>
+
+    <div class="layout-main">
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="hamburger" onclick="openSidebar()" aria-label="Menüyü Aç">
+                    <i class="fa-solid fa-bars-staggered"></i>
+                </button>
+
+                <div class="topbar-heading">
+                    <div class="topbar-title">@localizer[ViewData["Title"]?.ToString() ?? ""]</div>
+                    <nav class="breadcrumb" aria-label="Konum">
+                        <a href="/Report/ReportList/">Vitour Panel</a>
+                        <span class="sep"><i class="fa-solid fa-angle-right"></i></span>
+                        @localizer[(ViewData["Breadcrumb"]?.ToString() ?? ViewData["Title"]?.ToString() ?? "")]
+                    </nav>
+                </div>
+            </div>
+
+            <div class="topbar-actions">
+                <div class="search-wrap">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" placeholder="@localizer["Sistemde ara…"]" aria-label="Ara" />
+                </div>
+
+                <div class="lang-drop" id="langDrop">
+                    <div class="lang-trigger" onclick="toggleLangDrop()">
+                        <img id="lang-flag" src="https://flagcdn.com/24x18/@(currentCulture == "tr" ? "tr" : "gb").png" alt="@currentCulture.ToUpper()" />
+                        <span class="chevron"><i class="fa-solid fa-chevron-down"></i></span>
+                    </div>
+                    <div class="lang-menu">
+                        <a class="lang-option @(currentCulture == "tr" ? "selected" : "")" href="@Url.Action("SetLanguage", "Language", new { culture = "tr", returnUrl = returnUrl })">
+                            <img src="https://flagcdn.com/24x18/tr.png" alt="TR" /> Türkçe
+                            <i class="fa-solid fa-check check"></i>
+                        </a>
+                        <a class="lang-option @(currentCulture == "en" ? "selected" : "")" href="@Url.Action("SetLanguage", "Language", new { culture = "en", returnUrl = returnUrl })">
+                            <img src="https://flagcdn.com/24x18/gb.png" alt="EN" /> English
+                            <i class="fa-solid fa-check check"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <a href="/admin/bildirimler" class="icon-action" title="Bildirimler">
+                    <i class="fa-regular fa-bell"></i>
+                    <span class="notif-pip"></span>
+                </a>
+
+                <a href="/DefaultTour/TourList/" target="_blank" rel="noopener" class="visit-btn" title="Siteyi Görüntüle">
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                    <span>@localizer["Siteye Git"]</span>
+                </a>
+            </div>
+        </header>
+
+        <main class="page-content">
+            @RenderBody()
+        </main>
+    </div>
+
+    <script>
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+
+        function openSidebar() {
+            sidebar.classList.add('is-open');
+            overlay.classList.add('is-open');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeSidebar() {
+            sidebar.classList.remove('is-open');
+            overlay.classList.remove('is-open');
+            document.body.style.overflow = '';
+        }
+
+        function toggleLangDrop() {
+            document.getElementById('langDrop').classList.toggle('open');
+        }
+
+        document.addEventListener('click', function (e) {
+            if (!e.target.closest('#langDrop')) {
+                document.getElementById('langDrop').classList.remove('open');
+            }
+        });
+
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') closeSidebar();
+        });
+    </script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

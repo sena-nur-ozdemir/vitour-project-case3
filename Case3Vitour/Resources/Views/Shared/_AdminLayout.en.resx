@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+	<resheader name="resmimetype">
+		<value>text/microsoft-resx</value>
+	</resheader>
+	<resheader name="version">
+		<value>2.0</value>
+	</resheader>
+	<resheader name="reader">
+		<value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<resheader name="writer">
+		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<data name="Kategoriler" xml:space="preserve"><value>Categories</value></data>
+	<data name="Turlar" xml:space="preserve"><value>Tours</value></data>
+	<data name="Gösterge Paneli" xml:space="preserve"><value>Dashboard</value></data>
+	<data name="Tur Planları" xml:space="preserve"><value>Tour Plans</value></data>
+	<data name="Galeri" xml:space="preserve"><value>Gallery</value></data>
+	<data name="Rezervasyonlar" xml:space="preserve"><value>Reservations</value></data>
+	<data name="Ödemeler" xml:space="preserve"><value>Payments</value></data>
+	<data name="Raporlar" xml:space="preserve"><value>Reports</value></data>
+	<data name="Ayarlar" xml:space="preserve"><value>Settings</value></data>
+	<data name="Yorumlar" xml:space="preserve"><value>Reviews</value></data>
+	<data name="İçerik Yönetimi" xml:space="preserve"><value>Content Management</value></data>
+	<data name="İşlemler" xml:space="preserve"><value>Transactions</value></data>
+	<data name="Sistem" xml:space="preserve"><value>System</value></data>
+	<data name="Yönetim Paneli" xml:space="preserve"><value>Management Panel</value></data>
+	<data name="Genel" xml:space="preserve"><value>General</value></data>
+	<data name="Siteyi Gör" xml:space="preserve"><value>Go to Website</value></data>
+	<data name="Hızlı ara" xml:space="preserve"><value>Search</value></data>
+	<data name="Yönetici" xml:space="preserve"><value>Manager</value></data>
+</root>

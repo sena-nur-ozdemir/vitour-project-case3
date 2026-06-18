@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+	<resheader name="resmimetype">
+		<value>text/microsoft-resx</value>
+	</resheader>
+	<resheader name="version">
+		<value>2.0</value>
+	</resheader>
+	<data name="Tüm turları buradan yönetebilirsiniz." xml:space="preserve"><value>You can manage all tours from here.</value></data>
+	<data name="Yeni Tur Ekle" xml:space="preserve"><value>Add New Tour</value></data>
+	<data name="Toplam Tur" xml:space="preserve"><value>Total Tours</value></data>
+	<data name="Aktif" xml:space="preserve"><value>Active</value></data>
+	<data name="Pasif" xml:space="preserve"><value>Inactive</value></data>
+	<data name="Ort. Fiyat" xml:space="preserve"><value>Avg. Price</value></data>
+	<data name="Popüler Tur" xml:space="preserve"><value>Popular Tour</value></data>
+	<data name="kişi" xml:space="preserve"><value>person</value></data>
+	<data name="gün" xml:space="preserve"><value>day</value></data>
+	<data name="Kategori" xml:space="preserve"><value>Category</value></data>
+	<data name="Süre" xml:space="preserve"><value>Duration</value></data>
+	<data name="Kapasite" xml:space="preserve"><value>Capacity</value></data>
+	<data name="Fiyat" xml:space="preserve"><value>Price</value></data>
+	<data name="Durum" xml:space="preserve"><value>Status</value></data>
+	<data name="İşlemler" xml:space="preserve"><value>Transactions</value></data>
+	<data name="Tur Listesi" xml:space="preserve"><value>Tour List</value></data>
+</root>

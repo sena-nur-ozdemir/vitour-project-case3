@@ -1,0 +1,327 @@
+﻿@model Case3Vitour.Dtos.CategoryDtos.GetCategoryByIdDto
+
+@{
+    ViewData["Title"] = "Kategori Güncelle";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["ActiveMenu"] = "kategoriler";
+    ViewData["Breadcrumb"] = "Kategoriler / Düzenle";
+}
+
+<style>
+    /* ── İki Sütunlu Grid ── */
+    .edit-wrapper {
+        display: grid;
+        grid-template-columns: 1fr 340px;
+        gap: 25px;
+        align-items: start;
+    }
+
+    .form-card {
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow-md);
+        overflow: hidden;
+    }
+
+    .form-card-header {
+        padding: 20px 25px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        background: #fafafa;
+    }
+
+    .header-icon {
+        width: 38px;
+        height: 38px;
+        background: var(--primary-soft);
+        color: var(--primary);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
+    }
+
+    /* ── Form Elemanları ── */
+    .form-container {
+        padding: 25px;
+    }
+
+    .custom-label {
+        display: block;
+        font-weight: 700;
+        font-size: 0.85rem;
+        color: var(--text-main);
+        margin-bottom: 8px;
+    }
+
+    .custom-input {
+        width: 100%;
+        padding: 12px 15px;
+        border: 1.5px solid var(--border);
+        border-radius: 10px;
+        outline: none;
+        transition: 0.2s;
+        background: var(--bg-canvas);
+    }
+
+        .custom-input:focus {
+            border-color: var(--primary);
+            background: #fff;
+            box-shadow: 0 0 0 4px var(--primary-soft);
+        }
+
+    /* Readonly ID Alanı */
+    .readonly-id {
+        background: #f1f5f9;
+        color: #64748b;
+        font-family: monospace;
+        cursor: not-allowed;
+    }
+
+    /* ── Değişiklik Uyarısı ── */
+    .change-alert {
+        display: none;
+        align-items: center;
+        gap: 10px;
+        padding: 12px;
+        background: #fffbeb;
+        border: 1px solid #fef3c7;
+        border-radius: 10px;
+        color: #92400e;
+        font-size: 0.85rem;
+        margin-bottom: 20px;
+    }
+
+        .change-alert.visible {
+            display: flex;
+        }
+
+    /* ── Toggle Switch ── */
+    .status-switch {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 15px;
+        background: var(--bg-canvas);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        cursor: pointer;
+    }
+
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 44px;
+        height: 22px;
+    }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        inset: 0;
+        background-color: #cbd5e1;
+        transition: .3s;
+        border-radius: 34px;
+    }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+        }
+
+    input:checked + .slider {
+        background-color: var(--primary);
+    }
+
+        input:checked + .slider:before {
+            transform: translateX(22px);
+        }
+
+    /* ── Sağ Panel Kutuları ── */
+    .side-box {
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+
+    .side-title {
+        font-weight: 700;
+        font-size: 0.9rem;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .meta-item {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.8rem;
+        margin-bottom: 10px;
+        color: var(--text-muted);
+    }
+
+    .meta-value {
+        color: var(--text-main);
+        font-weight: 600;
+    }
+
+    .danger-zone {
+        border: 1px solid #fecdd3;
+        background: #fff1f2;
+        border-radius: var(--radius);
+        padding: 20px;
+    }
+</style>
+
+<div class="page-head" style="margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center;">
+    <div>
+        <h2 style="font-weight: 800;">Kategori Düzenle</h2>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">
+            <span style="color: var(--primary); font-weight: 700;">@Model.CategoryName</span> bilgisini güncelliyorsunuz.
+        </p>
+    </div>
+    <a href="/Category/CategoryList" class="btn btn-secondary" style="border-radius: 10px; padding: 10px 20px; font-weight: 600;">
+        <i class="fa-solid fa-arrow-left"></i> Listeye Dön
+    </a>
+</div>
+
+<div class="edit-wrapper">
+    <div class="form-card">
+        <div class="form-card-header">
+            <div class="header-icon"><i class="fa-solid fa-pen-to-square"></i></div>
+            <div style="font-weight: 700;">Kategori Detayları</div>
+        </div>
+
+        <form method="post" asp-action="UpdateCategory" asp-controller="Category" id="editForm">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="CategoryId" id="hiddenId" />
+
+            <div class="form-container">
+                <div class="change-alert" id="changeAlert">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    Kaydedilmemiş değişiklikleriniz bulunuyor.
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <label class="custom-label">Benzersiz Kimlik (ID)</label>
+                    <input type="text" value="@Model.CategoryId" class="custom-input readonly-id" readonly />
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <label class="custom-label" asp-for="CategoryName">Kategori Adı</label>
+                    <input type="text" asp-for="CategoryName" class="custom-input" id="nameInput" />
+                    <span asp-validation-for="CategoryName" class="text-danger" style="font-size: 0.75rem;"></span>
+                </div>
+
+                <div style="margin-bottom: 25px;">
+                    <label class="custom-label">Yayın Durumu</label>
+                    <label class="status-switch">
+                        <span style="font-weight:600; font-size:0.85rem;">Sitede Aktif Olarak Göster</span>
+                        <div class="switch">
+                            <input type="checkbox" asp-for="CategoryStatus" id="statusToggle">
+                            <span class="slider"></span>
+                        </div>
+                    </label>
+                </div>
+
+                <div style="display:flex; gap:10px; padding-top:20px; border-top: 1px solid var(--border);">
+                    <button type="submit"
+                            style="background-color: #0f8b8d !important;
+               color: #ffffff !important;
+               border: none;
+               padding: 12px 25px;
+               border-radius: 10px;
+               cursor: pointer;
+               font-weight: 700;
+               display: inline-flex;
+               align-items: center;
+               gap: 8px;
+               transition: 0.3s;">
+                        <i class="fa-solid fa-floppy-disk"></i> Değişiklikleri Kaydet
+                    </button>
+                    <a href="/Category/CategoryList" class="nav-link" style="background: var(--bg-canvas); color: var(--text-muted); padding: 12px 25px; border-radius: 10px; font-weight: 600;">
+                        İptal
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="side-panel">
+        <div class="side-box">
+            <div class="side-title"><i class="fa-solid fa-circle-info" style="color: var(--primary);"></i> Kayıt Bilgisi</div>
+            <div class="meta-item">
+                <span>Tür:</span>
+                <span class="meta-value">Tur Kategorisi</span>
+            </div>
+            <div class="meta-item" style="margin-top:15px; padding-top:15px; border-top:1px solid var(--border);">
+                <span style="font-size:0.75rem; line-height:1.4;">Bu kategoriyi güncellediğinizde, bu kategoriye bağlı tüm turlar yeni isim altında listelenmeye devam edecektir.</span>
+            </div>
+        </div>
+
+        <div class="danger-zone">
+            <div class="side-title" style="color: #e11d48;"><i class="fa-solid fa-triangle-exclamation"></i> Tehlikeli Alan</div>
+            <p style="font-size: 0.75rem; color: #991b1b; margin-bottom: 15px; line-height: 1.4;">
+                Bu kategoriyi sildiğinizde geri alamazsınız. Bağlı turlar etkilenebilir.
+            </p>
+            <form asp-action="DeleteCategory" asp-controller="Category" asp-route-id="@Model.CategoryId" method="post" onsubmit="return confirm('Bu kategoriyi kalıcı olarak silmek istediğinize emin misiniz?')">
+                @Html.AntiForgeryToken()
+                <button type="submit" style="width:100%; background:#fb7185; color:white; border:none; padding:10px; border-radius:8px; font-weight:700; cursor:pointer;">
+                    <i class="fa-solid fa-trash-can"></i> Kategoriyi Sil
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        // Orijinal değerleri saklayalım (Değişiklik kontrolü için)
+        const initialName = document.getElementById('nameInput').value;
+        const initialStatus = document.getElementById('statusToggle').checked;
+        const changeAlert = document.getElementById('changeAlert');
+
+        function checkChanges() {
+            const currentName = document.getElementById('nameInput').value;
+            const currentStatus = document.getElementById('statusToggle').checked;
+
+            if (currentName !== initialName || currentStatus !== initialStatus) {
+                changeAlert.classList.add('visible');
+            } else {
+                changeAlert.classList.remove('visible');
+            }
+        }
+
+        document.getElementById('nameInput').addEventListener('input', checkChanges);
+        document.getElementById('statusToggle').addEventListener('change', checkChanges);
+
+        // Kaydet butonuna basınca uyarıyı kaldır
+        document.getElementById('editForm').addEventListener('submit', () => {
+            window.onbeforeunload = null;
+        });
+    </script>
+}

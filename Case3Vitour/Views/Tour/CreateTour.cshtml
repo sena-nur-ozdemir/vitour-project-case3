@@ -1,0 +1,336 @@
+﻿@model Case3Vitour.Dtos.TourDtos.CreateTourDto
+
+@{
+    ViewData["Title"] = "Yeni Tur Ekle";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["ActiveMenu"] = "turlar";
+    ViewData["Breadcrumb"] = "Turlar / Yeni";
+}
+
+<style>
+    .create-grid {
+        display: grid;
+        grid-template-columns: 1fr 340px;
+        gap: 24px;
+        align-items: start;
+    }
+
+    .form-card {
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow-md);
+        overflow: hidden;
+    }
+
+    .form-card-header {
+        padding: 18px 24px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        background: #fafafa;
+    }
+
+    .header-icon {
+        width: 38px;
+        height: 38px;
+        background: var(--primary-soft);
+        color: var(--primary);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
+    }
+
+    .form-body {
+        padding: 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 18px;
+    }
+
+    .form-group-full {
+        grid-column: span 2;
+    }
+
+    .custom-label {
+        display: block;
+        font-weight: 700;
+        font-size: 0.85rem;
+        color: var(--text-main);
+        margin-bottom: 6px;
+    }
+
+    .custom-input {
+        width: 100%;
+        padding: 11px 15px;
+        border: 1.5px solid var(--border);
+        border-radius: 10px;
+        outline: none;
+        transition: 0.2s;
+        background: var(--bg-canvas);
+        font-size: 0.9rem;
+    }
+
+        .custom-input:focus {
+            border-color: var(--primary);
+            background: #fff;
+            box-shadow: 0 0 0 3px var(--primary-soft);
+        }
+
+    .preview-card {
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: var(--shadow-sm);
+    }
+
+    .preview-img {
+        width: 100%;
+        height: 160px;
+        object-fit: cover;
+        background: #e2e8f0;
+        display: block;
+    }
+
+    .preview-body {
+        padding: 15px;
+    }
+
+    .preview-title {
+        font-weight: 800;
+        font-size: 1rem;
+        margin-bottom: 8px;
+        color: var(--text-main);
+    }
+
+    .preview-meta {
+        display: flex;
+        gap: 12px;
+        font-size: 0.75rem;
+        color: var(--text-muted);
+    }
+
+    .check-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        margin-bottom: 10px;
+        transition: 0.2s;
+    }
+
+        .check-item.active {
+            color: #059669;
+            font-weight: 600;
+        }
+
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 44px;
+        height: 22px;
+    }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        inset: 0;
+        background-color: #cbd5e1;
+        transition: .3s;
+        border-radius: 34px;
+    }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+        }
+
+    input:checked + .slider {
+        background-color: var(--primary);
+    }
+
+        input:checked + .slider:before {
+            transform: translateX(22px);
+        }
+</style>
+
+<div class="page-head" style="margin-bottom: 25px;">
+    <h2 style="font-weight: 800;">Yeni Tur Rotası Ekle</h2>
+    <p style="color: var(--text-muted); font-size: 0.9rem;">Alanları doldururken sağ taraftaki önizlemeyi kontrol edebilirsiniz.</p>
+</div>
+
+<form method="post" asp-controller="Tour" asp-action="CreateTour">
+    @Html.AntiForgeryToken()
+    <div class="create-grid">
+        <div class="form-card">
+            <div class="form-card-header">
+                <div class="header-icon"><i class="fa-solid fa-plus-circle"></i></div>
+                <div style="font-weight: 700;">Tur Detayları</div>
+            </div>
+
+            <div class="form-body">
+                <div class="form-row">
+                    <div class="form-group-full">
+                        <label class="custom-label">Tur Başlığı</label>
+                        <input type="text" asp-for="Title" class="custom-input" id="inTitle" />
+                        <span asp-validation-for="Title" class="text-danger"></span>
+                    </div>
+
+                    <div>
+                        <label class="custom-label">Kategori</label>
+                        <select asp-for="CategoryId" class="custom-input" asp-items="@(List<SelectListItem>)ViewBag.Categories">
+                            <option value="">Seçiniz...</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="custom-label">Destinasyon (Şehir)</label>
+                        <input type="text" asp-for="MapLocationTitle" class="custom-input" id="inDest" placeholder="Nevşehir..." />
+                    </div>
+
+                    <div>
+                        <label class="custom-label">Fiyat (₺)</label>
+                        <input type="number" asp-for="Price" class="custom-input" id="inPrice" />
+                    </div>
+
+                    <div>
+                        <label class="custom-label">Süre</label>
+                        <input type="text" asp-for="DayNight" class="custom-input" id="inDuration" placeholder="3 Gün 2 Gece" />
+                    </div>
+
+                    <div>
+                        <label class="custom-label">Kapasite</label>
+                        <input type="number" asp-for="Capacity" class="custom-input" id="inCap" />
+                    </div>
+
+                    <div>
+                        <label class="custom-label">Tur Rozeti</label>
+                        <select asp-for="Badge" class="custom-input">
+                            <option value="">Rozet Yok</option>
+                            <option value="Popüler">Popüler</option>
+                            <option value="Yeni">Yeni</option>
+                            <option value="Fırsat">Fırsat</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group-full">
+                        <label class="custom-label">Kapak Görsel URL</label>
+                        <input type="text" asp-for="CoverImageUrl" class="custom-input" id="inImg" />
+                    </div>
+
+                    <div class="form-group-full">
+                        <label class="custom-label">Animasyonlu Rota Haritası (Pixar) Linki</label>
+                        <input type="text" asp-for="MapLocationImageUrl" class="custom-input" placeholder="Yapay zeka ile ürettiğiniz harita görselinin linkini yapıştırın..." />
+                    </div>
+
+                    <div class="form-group-full">
+                        <label class="custom-label" asp-for="MapLocationDescription">Rota Açıklaması (Keşfetmeye Başla Metni)</label>
+                        <textarea asp-for="MapLocationDescription" class="custom-input" rows="3" placeholder="Bu rotada misafirleri neler bekliyor? Örneğin: İç Anadolu'nun kalbine..."></textarea>
+                        <span asp-validation-for="MapLocationDescription" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group-full">
+                        <label class="custom-label">Açıklama</label>
+                        <textarea asp-for="Description" class="custom-input" id="inDesc" rows="4"></textarea>
+                    </div>
+                </div>
+
+                <div style="display: flex; align-items:center; justify-content:space-between; padding: 15px; background: var(--bg-canvas); border-radius:12px;">
+                    <div>
+                        <div style="font-weight: 700; font-size: 0.9rem;">Hemen Yayınla</div>
+                        <div style="font-size: 0.75rem; color: var(--text-muted);">Aktif ederseniz tur listede görünür.</div>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" asp-for="Status" id="inStatus">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div style="display: flex; gap: 10px; margin-top: 10px;">
+                    <button type="submit"
+                            style="background-color: #0f8b8d;
+               color: #ffffff;
+               padding: 12px 25px;
+               border-radius: 10px;
+               border: none;
+               font-weight: 700;
+               cursor: pointer;
+               display: inline-flex;
+               align-items: center;
+               gap: 8px;">
+                        <i class="fa-solid fa-plus-circle"></i> Kaydet
+                    </button>
+                    <a asp-action="TourList" class="nav-link" style="background:var(--bg-canvas); padding:12px 25px; border-radius:10px; text-decoration:none; color:var(--text-muted); font-weight:600;">Vazgeç</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="side-panel">
+            <div class="form-card">
+                <div class="form-card-header"><div style="font-weight:700; font-size:0.85rem;">Kart Önizleme</div></div>
+                <div class="preview-card" style="margin:15px;">
+                    <img id="pvImg" src="/images/no-image.png" class="preview-img" onerror="this.src='/images/no-image.png'" />
+                    <div class="preview-body">
+                        <div id="pvTitle" class="preview-title">Tur Başlığı</div>
+                        <div class="preview-meta">
+                            <span id="pvDest">📍 Destinasyon</span>
+                            <span id="pvDuration">⏱ Süre</span>
+                        </div>
+                        <div id="pvPrice" style="font-weight:800; color:var(--primary); margin-top:10px;">0 ₺</div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-card" style="padding: 20px;">
+                <div class="check-item" id="chkTitle"><i class="fa-solid fa-circle-check"></i> Başlık</div>
+                <div class="check-item" id="chkDesc"><i class="fa-solid fa-circle-check"></i> Açıklama</div>
+                <div class="check-item" id="chkPrice"><i class="fa-solid fa-circle-check"></i> Fiyat</div>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <script>
+        function updateUI() {
+            document.getElementById('pvTitle').innerText = document.getElementById('inTitle').value || "Tur Başlığı";
+            document.getElementById('pvDest').innerText = "📍 " + (document.getElementById('inDest').value || "Destinasyon");
+            document.getElementById('pvDuration').innerText = "⏱ " + (document.getElementById('inDuration').value || "Süre");
+            document.getElementById('pvPrice').innerText = (document.getElementById('inPrice').value || "0") + " ₺";
+            if(document.getElementById('inImg').value) document.getElementById('pvImg').src = document.getElementById('inImg').value;
+
+            document.getElementById('chkTitle').classList.toggle('active', document.getElementById('inTitle').value.length > 2);
+            document.getElementById('chkDesc').classList.toggle('active', document.getElementById('inDesc').value.length > 10);
+            document.getElementById('chkPrice').classList.toggle('active', document.getElementById('inPrice').value > 0);
+        }
+        ['inTitle', 'inDest', 'inPrice', 'inDuration', 'inImg', 'inDesc'].forEach(id => {
+            document.getElementById(id).addEventListener('input', updateUI);
+        });
+    </script>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

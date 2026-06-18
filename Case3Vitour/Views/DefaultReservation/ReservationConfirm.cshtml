@@ -1,0 +1,115 @@
+﻿@model Case3Vitour.Dtos.ReservationDtos.GetReservationByIdDto
+
+@{
+    ViewData["Title"] = "Rezervasyon Onaylandı";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8" />
+    <title>Rezervasyon Başarılı – Vitour</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&family=Playfair+Display:wght@700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <style>
+        :root {
+            --primary: #0f8b8d;
+            --primary-dark: #0b6466;
+            --primary-soft: rgba(15, 139, 141, .1);
+            --text-main: #102a43;
+            --bg-body: #eef5f7;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: var(--bg-body);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .confirm-card {
+            background: #fff;
+            padding: 50px 40px;
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(16, 42, 67, 0.1);
+            text-align: center;
+            max-width: 520px;
+            width: 100%;
+            border-top: 8px solid var(--primary);
+        }
+
+        .icon-box {
+            width: 86px;
+            height: 86px;
+            background: var(--primary);
+            color: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            margin: 0 auto 25px;
+            box-shadow: 0 10px 25px rgba(15, 139, 141, 0.3);
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            color: var(--text-main);
+            margin-bottom: 15px;
+        }
+
+        .res-code-box {
+            background: var(--primary-soft);
+            border: 2px dashed var(--primary);
+            padding: 20px;
+            font-size: 28px;
+            font-weight: 900;
+            color: var(--primary-dark);
+            letter-spacing: 4px;
+            margin: 25px 0;
+            border-radius: 16px;
+            font-family: monospace;
+        }
+
+        .btn-home {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 32px;
+            background: var(--primary);
+            color: #fff;
+            text-decoration: none;
+            border-radius: 14px;
+            font-weight: 700;
+            transition: .3s;
+        }
+
+            .btn-home:hover {
+                background: var(--primary-dark);
+                transform: scale(1.03);
+            }
+    </style>
+</head>
+<body>
+    <div class="confirm-card">
+        <div class="icon-box"><i class="fa-solid fa-check-double"></i></div>
+        <h1>İşlem Başarılı!</h1>
+        <p style="color:var(--text-muted)">Sayın <strong>@Model.NameSurname</strong>, rezervasyonunuz başarıyla sisteme kaydedildi.</p>
+
+        <div style="font-size:12px; text-transform:uppercase; font-weight:800; color:var(--primary); margin-top:20px;">Rezervasyon Kodunuz</div>
+        <div class="res-code-box">@Model.ReservationCode</div>
+
+        <p>Ödenen Tutar: <strong style="color:var(--primary); font-size:18px;">@Model.TotalPrice.ToString("N2")</strong></p>
+        <p style="font-size:13px; color:#6b7c93; margin-top:10px;">Lütfen bu kodu tur günü rehberinize ibraz ediniz.</p>
+
+        <div style="margin-top:30px;">
+            <a href="/DefaultTour/TourList" class="btn-home"><i class="fa-solid fa-house"></i> Ana Sayfaya Dön</a>
+        </div>
+    </div>
+</body>
+</html>

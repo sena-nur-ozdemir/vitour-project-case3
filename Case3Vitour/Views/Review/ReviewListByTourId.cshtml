@@ -1,0 +1,258 @@
+﻿@model List<Case3Vitour.Dtos.ReviewDtos.ResultReviewByTourIdDto>
+
+@{
+    var tour = ViewBag.Tour as Case3Vitour.Dtos.TourDtos.ResultTourDto;
+    ViewData["Title"] = (tour?.Title ?? "Tur") + " Değerlendirmeleri";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["ActiveMenu"] = "turlar";
+}
+
+<style>
+    .tour-summary {
+        display: flex;
+        align-items: center;
+        gap: 24px;
+        padding: 24px;
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        margin-bottom: 24px;
+        flex-wrap: wrap;
+    }
+
+    .tour-thumb {
+        width: 80px;
+        height: 64px;
+        border-radius: 8px;
+        object-fit: cover;
+        background: #e0f2fe;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        color: #93c5fd;
+        overflow: hidden;
+    }
+
+    .tour-info {
+        flex: 1;
+        min-width: 200px;
+    }
+
+    .tour-info-name {
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--t1);
+    }
+
+    .tour-info-meta {
+        display: flex;
+        gap: 16px;
+        font-size: 13px;
+        color: var(--t3);
+        margin-top: 6px;
+    }
+
+    .tour-summary-divider {
+        width: 1px;
+        height: 60px;
+        background: var(--border);
+    }
+
+    /* Dağılım Çubukları */
+    .dist-block {
+        flex: 1;
+        min-width: 240px;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .dist-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 12.5px;
+    }
+
+    .dist-label {
+        display: flex;
+        align-items: center;
+        gap: 3px;
+        font-weight: 600;
+        width: 30px;
+    }
+
+    .dist-bar-wrap {
+        flex: 1;
+        height: 8px;
+        background: #f1f5f9;
+        border-radius: 99px;
+        overflow: hidden;
+    }
+
+    .dist-bar-fill {
+        height: 100%;
+        border-radius: 99px;
+        background: #f59e0b;
+    }
+
+    .dist-count {
+        width: 24px;
+        text-align: right;
+        color: var(--t3);
+    }
+
+    /* Yorum Kartı Izgarası */
+    .reviews-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 16px;
+    }
+
+    .review-card {
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        position: relative;
+    }
+
+    .rc-status-bar {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
+        border-radius: var(--radius) 0 0 var(--radius);
+    }
+
+        .rc-status-bar.active {
+            background: #22c55e;
+        }
+
+        .rc-status-bar.inactive {
+            background: #cbd5e1;
+        }
+
+    .rc-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .rc-avatar {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        background: linear-gradient(135deg,#e0f2fe,#0d9488);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        font-weight: 800;
+        color: white;
+        text-transform: uppercase;
+    }
+
+    .rc-name {
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--t1);
+    }
+
+    .rc-date {
+        font-size: 11.5px;
+        color: var(--t3);
+    }
+
+    .rc-comment {
+        font-size: 13.5px;
+        color: var(--t2);
+        line-height: 1.6;
+        font-style: italic;
+    }
+</style>
+
+<div style="margin-bottom:24px; display:flex; justify-content:space-between; align-items:center;">
+    <div>
+        <h1 style="font-size:22px; font-weight:800; color:var(--t1);">Tur Değerlendirmeleri</h1>
+        <p style="font-size:13.5px; color:var(--t3);">Seçili tura ait müşteri geri bildirim barları ve detayları.</p>
+    </div>
+    <a href="/Tour/TourList" class="btn btn-ghost" style="border:1px solid var(--border); background:#fff; padding:8px 16px; border-radius:6px; text-decoration:none; color:var(--t2); font-weight:600;"><i class="fa-solid fa-arrow-left"></i> Turlara Dön</a>
+</div>
+
+<div class="tour-summary">
+    <div class="tour-thumb"><i class="fa-solid fa-earth-americas"></i></div>
+    <div class="tour-info">
+        <div class="tour-info-name">@(tour?.Title ?? "Tur Başlığı")</div>
+        <div class="tour-info-meta">
+            <span><i class="fa-solid fa-tag"></i> ₺@(tour?.Price.ToString("N0") ?? "0")</span>
+            <span><i class="fa-solid fa-users"></i> @(tour?.Capacity ?? 0) Kişi Kapasite</span>
+        </div>
+    </div>
+
+    @if (Model != null && Model.Any())
+    {
+        var avg = Model.Average(r => r.Score);
+        <div class="tour-summary-divider"></div>
+        <div style="text-align:center; padding:0 10px;">
+            <div class="avg-number">@avg.ToString("F1")</div>
+            <div style="font-size:12px; font-weight:700; color:#b45309; margin-top:4px;">★ Ortalama</div>
+        </div>
+        <div class="tour-summary-divider"></div>
+
+        <div class="dist-block">
+            @for (int star = 5; star >= 1; star--)
+            {
+                var count = Model.Count(r => Math.Round(r.Score) == star);
+                var pct = (count * 100.0) / Model.Count;
+                <div class="dist-row">
+                    <div class="dist-label">@star <i class="fa-solid fa-star" style="color:#f59e0b; font-size:10px;"></i></div>
+                    <div class="dist-bar-wrap"><div class="dist-bar-fill" style="width: @pct.ToString("F0")%"></div></div>
+                    <div class="dist-count">@count</div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+<div class="reviews-grid">
+    @if (Model != null && Model.Any())
+    {
+        foreach (var r in Model)
+        {
+            var init = r.NameSurname.Substring(0, Math.Min(2, r.NameSurname.Length)).ToUpper();
+            <div class="review-card">
+                <div class="rc-status-bar @(r.Status ? "active" : "inactive")"></div>
+                <div class="rc-header">
+                    <div class="rc-avatar">@init</div>
+                    <div>
+                        <div class="rc-name">@r.NameSurname</div>
+                        <div class="rc-date">@r.ReviewDate.ToString("dd MMM yyyy")</div>
+                    </div>
+                    <span style="margin-left:auto; font-size:12px; font-weight:700; background:#f0fdf4; color:#16a34a; padding:2px 8px; border-radius:12px;">★ @r.Score.ToString("F1")</span>
+                </div>
+                <div class="rc-comment">"@r.Comment"</div>
+
+                <div style="font-size:11px; color:var(--t3); display:grid; grid-template-columns:1fr 1fr; gap:4px; margin-top:6px; border-top:1px solid #f1f5f9; padding-top:8px;">
+                    <div>🗺️ Rehber: @r.GuideScore/5</div>
+                    <div>🏨 Konaklama: @r.AccommodationScore/5</div>
+                    <div>🚌 Ulaşım: @r.TransportationScore/5</div>
+                    <div>💰 Fiyat/Perf: @r.ValueForMoneyScore/5</div>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <div style="grid-column: 1/-1; background:#fff; border:1px solid var(--border); border-radius:12px; padding:40px; text-align:center; color:var(--t3);">
+            <i class="fa-solid fa-comment-slash" style="font-size:32px; opacity:0.3; margin-bottom:10px;"></i>
+            <br />Bu tur için henüz yorum yapılmamış.
+        </div>
+    }
+</div>

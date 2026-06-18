@@ -1,0 +1,71 @@
+﻿@using Case3Vitour.Dtos.TourDtos
+@model List<Case3Vitour.Dtos.TourDtos.ResultTourDto>
+
+<div class="sidebar-widget">
+    @* Başlık kısmı *@
+    <h4 class="block-heading">Son Eklenen Turlar</h4>
+
+    <div class="recent-post-list">
+        @if (Model != null && Model.Any())
+        {
+            @foreach (var item in Model)
+            {
+                <div class="list-recent flex-three wow fadeInUp">
+                    @* Tur Kapak Resmi *@
+                    <a href="/DefaultTour/TourDetails/@item.TourId" class="recent-image">
+                        @* Resimleri 80x80 sabitledik ki sidebar yamulmasın *@
+                        <img src="@item.CoverImageUrl"
+                             style="width: 80px; height: 80px; object-fit: cover; border-radius: 10px;"
+                             alt="@item.Title">
+                    </a>
+
+                    @* Tur Kısa Bilgileri *@
+                    <div class="recent-info">
+                        <h4 class="title">
+                            <a href="/DefaultTour/TourDetails/@item.TourId">
+                                @* Başlık çok uzunsa kutuyu bozmasın diye sınırladık *@
+                                @(item.Title.Length > 35 ? item.Title.Substring(0, 32) + "..." : item.Title)
+                            </a>
+                        </h4>
+                        <p>
+                            Fiyat: <span class="text-main" style="font-weight: 700; color: #28a745;">
+                                @item.Price.ToString("N0") ₺
+                            </span>
+                        </p>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <p class="text-muted" style="padding: 10px;">Henüz tur eklenmemiş.</p>
+        }
+    </div>
+</div>
+
+<style>
+    /* Sidebar kartları için özel efektler */
+    .list-recent {
+        margin-bottom: 20px;
+        padding: 5px;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+    }
+
+        .list-recent:hover {
+            background-color: #f8f9fa; /* Üzerine gelince hafif gri arka plan */
+            transform: translateX(5px); /* Hafif sağa kayma efekti */
+        }
+
+    .recent-info .title a {
+        font-size: 15px;
+        color: #1a1a1a;
+        line-height: 1.4;
+        display: block;
+        text-decoration: none;
+    }
+
+        .recent-info .title a:hover {
+            color: #28a745; /* Yeşil tonlarında hover */
+        }
+</style>

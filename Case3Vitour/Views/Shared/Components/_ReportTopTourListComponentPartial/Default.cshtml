@@ -1,0 +1,52 @@
+﻿@model List<Case3Vitour.Dtos.ReportDtos.ResultTopTourDto>
+
+<div class="v-card">
+    <div class="v-card-header">
+        <div style="display:flex; align-items:center; gap:10px;">
+            <div class="v-card-icon" style="background:rgba(217,119,6,.1);color:#d97706;"><i class="fa-solid fa-trophy"></i></div>
+            <div>
+                <div class="v-card-title">En Popüler Turlar</div>
+                <div class="v-card-sub">Rezervasyon sayısına göre</div>
+            </div>
+        </div>
+    </div>
+    <div class="v-card-body">
+        @{
+            var maxCount = Model.Any() ? Model.Max(t => t.TotalReservations) : 1;
+            var rankLabels = new[] { "1", "2", "3", "4", "5" };
+            int i = 0;
+            string GetColor(int index) => index switch
+            {
+                0 => "#d97706", // Turuncu
+                1 => "#0ea5e9", // Mavi
+                2 => "#8b5cf6", // Mor
+                3 => "#10b981", // Yeşil
+                _ => "#ef4444"  // Kırmızı
+            };
+        }
+
+        @foreach (var t in Model.Take(5))
+        {
+            var pct = maxCount == 0 ? 0 : (int)Math.Round((double)t.TotalReservations / maxCount * 100);
+            var color = GetColor(i);
+            var rank = i switch { 0 => "gold", 1 => "silver", 2 => "bronze", _ => "standard" };
+
+            <div class="list-row">
+                <div class="list-rank @rank">@rankLabels[i]</div>
+                <div class="list-info">
+                    <div class="list-name">@t.Title</div>
+                    <div class="spark-bar"><div class="spark-fill" style="width:@pct%;background:@color;"></div></div>
+
+                    <a asp-action="DownloadTourReservationsPdf" asp-controller="Report" asp-route-id="@t.TourId" style="font-size:11px; color:#0ea5e9; font-weight:700; display:inline-flex; align-items:center; gap:4px; margin-top:8px; text-decoration:none;">
+                        <i class="fa-solid fa-file-pdf"></i> Listeyi İndir
+                    </a>
+                </div>
+                <div>
+                    <div class="list-val">@t.TotalReservations</div>
+                    <div class="list-val-sub">rezervasyon</div>
+                </div>
+            </div>
+            i++;
+        }
+    </div>
+</div>

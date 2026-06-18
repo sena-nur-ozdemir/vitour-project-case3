@@ -1,0 +1,35 @@
+﻿@model Case3Vitour.Dtos.TourDtos.GetTourByIdDto
+
+<div class="tab-pane fade" id="pills-location-share" role="tabpanel" aria-labelledby="pills-location-share-tab" tabindex="0">
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="localtion-content-tour">
+
+                <div class="map-image-wrap mb-32">
+                    @if (!string.IsNullOrEmpty(Model.MapLocationImageUrl))
+                    {
+                        <img src="@Model.MapLocationImageUrl" alt="Tur Rota Haritası" style="width: 100%; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);" />
+                    }
+                    else
+                    {
+                        <p class="text-muted">Bu tur için henüz animasyonlu rota haritası yüklenmemiştir.</p>
+                    }
+                </div>
+
+                <div class="flex-three map-list mb-50">
+                    <i class="icon-18" style="color: #10b981;"></i>
+                    <p style="font-weight: 600;">@(string.IsNullOrEmpty(Model.MapLocationTitle) ? "Rota detayları" : Model.MapLocationTitle)</p>
+                </div>
+
+                <h3 class="title-location" style="font-weight: 800; margin-bottom: 15px;">Keşfetmeye Başla!</h3>
+                <p class="des mb-22">
+                    @(string.IsNullOrEmpty(Model.MapLocationDescription) ? "Yukarıdaki özel animasyonlu haritada turumuzun ana duraklarını ve rotasını inceleyebilir, eşsiz bir maceraya adım atabilirsiniz!" : Model.MapLocationDescription)
+                </p>
+
+            </div>
+        </div>
+
+        @await Component.InvokeAsync("_TourDetailsRightSidebarComponentPartial")
+
+    </div>
+</div>

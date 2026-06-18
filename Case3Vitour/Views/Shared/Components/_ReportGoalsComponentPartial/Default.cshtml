@@ -1,0 +1,47 @@
+﻿@model List<Case3Vitour.Dtos.ReportDtos.MonthlyGoalDto>
+@{
+    var goals = Model?.ToList() ?? new List<Case3Vitour.Dtos.ReportDtos.MonthlyGoalDto>();
+
+    // Eksik hedefleri ekleyelim
+    if (!goals.Any(g => g.Name.Contains("Rezervasyon"))) goals.Add(new Case3Vitour.Dtos.ReportDtos.MonthlyGoalDto { Name = "Rezervasyon", CurrentValue = 4, TargetValue = 150, Unit = "rezervasyon" });
+    if (!goals.Any(g => g.Name.Contains("Yorum"))) goals.Add(new Case3Vitour.Dtos.ReportDtos.MonthlyGoalDto { Name = "Yorum Sayısı", CurrentValue = 5, TargetValue = 50, Unit = "yorum" });
+    if (!goals.Any(g => g.Name.Contains("Puan"))) goals.Add(new Case3Vitour.Dtos.ReportDtos.MonthlyGoalDto { Name = "Ortalama Puan", CurrentValue = 4.6m, TargetValue = 5m, Unit = "puan" });
+    if (!goals.Any(g => g.Name.Contains("Tur"))) goals.Add(new Case3Vitour.Dtos.ReportDtos.MonthlyGoalDto { Name = "Tur Sayısı", CurrentValue = 9, TargetValue = 10, Unit = "aktif tur" });
+
+    var colors = new string[] { "#0ea5e9", "#10b981", "#f59e0b", "#8b5cf6", "#e11d48", "#0f766e" };
+    int i = 0;
+}
+
+<div class="v-card">
+    <div class="v-card-header">
+        <div style="display:flex; align-items:center; gap:10px;">
+            <div class="v-card-icon" style="background:rgba(16,185,129,.1);color:#10b981;"><i class="fa-solid fa-bullseye"></i></div>
+            <div>
+                <div class="v-card-title">Aylık Hedefler</div>
+                <div class="v-card-sub">@DateTime.Now.ToString("MMMM yyyy", new System.Globalization.CultureInfo("tr-TR")) ilerleme durumu</div>
+            </div>
+        </div>
+    </div>
+    <div class="v-card-body" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:32px;">
+        @foreach (var item in goals)
+        {
+            var pct = Math.Round((double)(item.CurrentValue / (item.TargetValue == 0 ? 1 : item.TargetValue) * 100));
+            pct = pct > 100 ? 100 : pct;
+            var color = colors[i % colors.Length];
+
+            <div class="goal-row" style="margin:0;">
+                <div class="goal-head">
+                    <span class="goal-name">@item.Name</span>
+                    <span class="goal-pct" style="color:@color;">@pct%</span>
+                </div>
+                <div class="goal-track">
+                    <div class="goal-prog" style="width:@pct%; background:@color;"></div>
+                </div>
+                <div class="goal-sub">
+                    <b>@item.CurrentValue.ToString("0.##")</b> / @item.TargetValue.ToString("0.##") @item.Unit
+                </div>
+            </div>
+            i++;
+        }
+    </div>
+</div>

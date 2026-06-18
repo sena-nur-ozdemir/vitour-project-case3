@@ -1,0 +1,301 @@
+﻿@model Case3Vitour.Dtos.ReservationDtos.CreateReservationDto
+@using Case3Vitour.Dtos.TourDtos
+
+@{
+    ViewData["Title"] = "Rezervasyon Yap";
+    Layout = null;
+
+    var tours = ViewBag.Tours as List<ResultTourDto> ?? new List<ResultTourDto>();
+    var selectedTour = ViewBag.SelectedTour as ResultTourDto;
+}
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rezervasyon Yap – Vitour</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <style>
+        :root {
+            /* Admin Panelinden Çekilen Renkler */
+            --primary: #0f8b8d;
+            --primary-dark: #0b6466;
+            --primary-soft: rgba(15, 139, 141, .12);
+            --text-main: #102a43;
+            --text-muted: #6b7c93;
+            --bg-main: #eef5f7;
+            --border: #dce7eb;
+            --card: #ffffff;
+            --radius: 18px;
+            --shadow: 0 14px 35px rgba(16, 42, 67, .08);
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: var(--bg-main);
+            color: var(--text-main);
+        }
+
+        .container {
+            max-width: 1060px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .page-hero {
+            background: linear-gradient(135deg, #0b6466 0%, #0f8b8d 100%);
+            padding: 60px 0;
+            text-align: center;
+            color: #fff;
+            border-bottom-left-radius: 40px;
+            border-bottom-right-radius: 40px;
+        }
+
+            .page-hero h1 {
+                font-family: 'Playfair Display', serif;
+                font-size: 36px;
+                margin-bottom: 10px;
+            }
+
+        .page-grid {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 30px;
+            padding: 40px 0;
+        }
+
+        .card {
+            background: var(--card);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+
+        .card-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: var(--bg-card);
+        }
+
+        .card-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
+            background: var(--primary-soft);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .card-title {
+            font-size: 17px;
+            font-weight: 800;
+            color: var(--text-main);
+        }
+
+        .card-body {
+            padding: 26px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 8px;
+        }
+
+        .form-input {
+            width: 100%;
+            height: 48px;
+            padding: 0 16px;
+            border: 1px solid var(--border);
+            border-radius: 13px;
+            background: #f9fbfc;
+            outline: none;
+            transition: .2s;
+        }
+
+            .form-input:focus {
+                border-color: var(--primary);
+                background: #fff;
+                box-shadow: 0 0 0 4px var(--primary-soft);
+            }
+
+        .btn-submit {
+            width: 100%;
+            height: 56px;
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            border-radius: 14px;
+            font-weight: 800;
+            cursor: pointer;
+            font-size: 16px;
+            transition: .3s;
+            box-shadow: 0 10px 20px rgba(15, 139, 141, 0.25);
+        }
+
+            .btn-submit:hover {
+                background: var(--primary-dark);
+                transform: translateY(-3px);
+                box-shadow: 0 15px 25px rgba(15, 139, 141, 0.35);
+            }
+
+        .summary-box {
+            background: var(--bg-soft);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+
+        .sum-line {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 18px;
+            font-size: 14px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .sum-total {
+            display: flex;
+            justify-content: space-between;
+            padding: 16px 18px;
+            background: var(--primary-soft);
+            font-weight: 800;
+        }
+
+        .sum-total-v {
+            color: var(--primary);
+            font-size: 20px;
+        }
+
+        .tour-img-wrap {
+            aspect-ratio: 16/10;
+            background: #dfe7ed;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+            .tour-img-wrap img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
+        @@media (max-width: 900px) {
+            .page-grid
+
+        {
+            grid-template-columns: 1fr;
+        }
+
+        }
+    </style>
+</head>
+<body>
+    <div class="page-hero">
+        <div class="container">
+            <h1>Rezervasyon Yap</h1>
+            <p>Seçtiğiniz tur için yerinizi hemen ayırtın.</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <form method="post" id="resForm">
+            @Html.AntiForgeryToken()
+            <div class="page-grid">
+                <div class="form-side">
+                    <div class="card">
+                        <div class="card-header"><div class="card-icon"><i class="fa-solid fa-user-check"></i></div> <div class="card-title">Kişisel Bilgiler</div></div>
+                        <div class="card-body">
+                            <label class="form-label">Ad Soyad</label>
+                            <input asp-for="NameSurname" class="form-input" id="inpName" placeholder="Ad Soyad giriniz" />
+                            <br /><br />
+                            <label class="form-label">E-posta</label>
+                            <input asp-for="Email" class="form-input" type="email" placeholder="E-posta adresiniz" />
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header"><div class="card-icon"><i class="fa-solid fa-map-location-dot"></i></div> <div class="card-title">Tur ve Kişi Sayısı</div></div>
+                        <div class="card-body">
+                            <select asp-for="TourId" class="form-input" id="inpTour" onchange="onTourChange()">
+                                <option value="">— Tur seçiniz —</option>
+                                @foreach (var t in tours)
+                                {
+                                    <option value="@t.TourId" data-title="@t.Title" data-price="@t.Price" data-cover="@t.CoverImageUrl" selected="@(selectedTour?.TourId == t.TourId ? "selected" : null)">@t.Title</option>
+                                }
+                            </select>
+                            <br /><br />
+                            <label class="form-label">Kişi Sayısı</label>
+                            <input asp-for="PersonCount" class="form-input" type="number" id="inpPerson" value="1" min="1" oninput="calcPrice()" />
+                        </div>
+                    </div>
+                    <input type="hidden" asp-for="TotalPrice" id="inpPrice" />
+                    <button type="submit" class="btn-submit"><i class="fa-solid fa-calendar-check"></i> Rezervasyonu Tamamla</button>
+                </div>
+
+                <div class="summary-side">
+                    <div class="card">
+                        <div class="tour-img-wrap">
+                            <img id="tourImg" src="@(selectedTour?.CoverImageUrl ?? "")" style="display:@(selectedTour != null ? "block" : "none")" />
+                            <i class="fa-solid fa-mountain-sun fa-3x" style="color:var(--primary); display:@(selectedTour != null ? "none" : "block")" id="imgPlaceholder"></i>
+                        </div>
+                        <div class="card-body">
+                            <h3 id="cardTourName" style="margin-bottom:15px; font-family:'Playfair Display';">@(selectedTour?.Title ?? "Tur Seçiniz")</h3>
+                            <div class="summary-box">
+                                <div class="sum-line"><span>Müşteri:</span> <span id="sumName">—</span></div>
+                                <div class="sum-line"><span>Kişi:</span> <span id="sumPerson">1 kişi</span></div>
+                                <div class="sum-total"><span>Toplam:</span> <span class="sum-total-v" id="sumTotal">0.00 ₺</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        function onTourChange() {
+            var opt = document.getElementById('inpTour').options[document.getElementById('inpTour').selectedIndex];
+            if(opt.value) {
+                document.getElementById('cardTourName').innerText = opt.dataset.title;
+                document.getElementById('tourImg').src = opt.dataset.cover;
+                document.getElementById('tourImg').style.display = 'block';
+                document.getElementById('imgPlaceholder').style.display = 'none';
+            }
+            calcPrice();
+        }
+        function calcPrice() {
+            var opt = document.getElementById('inpTour').options[document.getElementById('inpTour').selectedIndex];
+            var price = parseFloat(opt.dataset.price || 0);
+            var count = parseInt(document.getElementById('inpPerson').value || 1);
+            var total = price * count;
+            document.getElementById('sumTotal').innerText = total.toLocaleString('tr-TR', {minimumFractionDigits:2}) + " ₺";
+            document.getElementById('inpPrice').value = total.toFixed(2);
+            document.getElementById('sumPerson').innerText = count + " kişi";
+            document.getElementById('sumName').innerText = document.getElementById('inpName').value || "—";
+        }
+        document.getElementById('inpName').addEventListener('input', function() { document.getElementById('sumName').innerText = this.value || "—"; });
+        window.onload = onTourChange;
+    </script>
+</body>
+</html>

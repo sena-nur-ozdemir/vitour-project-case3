@@ -1,0 +1,431 @@
+﻿@model Case3Vitour.Dtos.TourDtos.UpdateTourDto
+
+@{
+    ViewData["Title"] = "Tur Güncelle";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["ActiveMenu"] = "turlar";
+    ViewData["Breadcrumb"] = "Turlar / Düzenle";
+}
+
+<style>
+    /* ── Üst Başlık ve Geri Dön Butonu ── */
+    .page-header-wrapper {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+        padding: 0 5px;
+    }
+
+    .page-header-text h2 {
+        font-weight: 800;
+        font-size: 1.6rem;
+        color: var(--text-main);
+        margin: 0;
+    }
+
+    .page-header-text p {
+        color: var(--text-muted);
+        font-size: 0.9rem;
+        margin-top: 5px;
+    }
+
+    .btn-back {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 20px;
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        color: var(--text-muted);
+        font-weight: 600;
+        font-size: 0.85rem;
+        text-decoration: none;
+        transition: 0.2s;
+    }
+
+        .btn-back:hover {
+            background: var(--bg-canvas);
+            color: #0f8b8d;
+            border-color: rgba(15, 139, 141, 0.2);
+            transform: translateX(-4px);
+        }
+
+    /* ── Grid ve Kartlar ── */
+    .edit-grid {
+        display: grid;
+        grid-template-columns: 1fr 350px;
+        gap: 30px;
+        align-items: start;
+    }
+
+    .v-card {
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        box-shadow: var(--shadow-sm);
+        overflow: hidden;
+    }
+
+    .form-card-header {
+        padding: 20px 25px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        background: #fafafa;
+    }
+
+    .header-icon {
+        width: 40px;
+        height: 40px;
+        background: rgba(15, 139, 141, 0.1);
+        color: #0f8b8d;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
+    }
+
+    .form-body {
+        padding: 30px 25px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+
+    .form-group-full {
+        grid-column: span 2;
+    }
+
+    .custom-label {
+        display: block;
+        font-weight: 700;
+        font-size: 0.85rem;
+        color: var(--text-main);
+        margin-bottom: 8px;
+    }
+
+    .custom-input {
+        width: 100%;
+        padding: 12px 16px;
+        border: 1.5px solid var(--border);
+        border-radius: 12px;
+        outline: none;
+        transition: 0.2s;
+        background: var(--bg-canvas);
+        font-size: 0.9rem;
+    }
+
+        .custom-input:focus {
+            border-color: #0f8b8d;
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(15, 139, 141, 0.1);
+        }
+
+    /* Önizleme ve Switch */
+    .status-switch-card {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 18px 20px;
+        background: var(--bg-canvas);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        margin-top: 10px;
+    }
+
+    .tcp-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 0.7rem;
+        font-weight: 800;
+        padding: 4px 10px;
+        border-radius: 20px;
+    }
+
+        .tcp-status.active {
+            background: #ecfdf5;
+            color: #10b981;
+        }
+
+        .tcp-status.passive {
+            background: #fef2f2;
+            color: #ef4444;
+        }
+
+    /* SABİT RENKLİ BUTON: CSS Değişkenine bağlı değil, asla kaybolmaz */
+    .btn-submit {
+        background: #0f8b8d !important;
+        color: white !important;
+        border: none;
+        padding: 14px 35px;
+        border-radius: 12px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: 0.3s;
+        box-shadow: 0 4px 12px rgba(15, 139, 141, 0.3);
+    }
+
+        .btn-submit:hover {
+            background: #0d7678 !important;
+            transform: translateY(-2px);
+        }
+
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 44px;
+        height: 22px;
+    }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        inset: 0;
+        background-color: #cbd5e1;
+        transition: .3s;
+        border-radius: 34px;
+    }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+        }
+
+    input:checked + .slider {
+        background-color: #0f8b8d;
+    }
+
+        input:checked + .slider:before {
+            transform: translateX(22px);
+        }
+</style>
+
+<div class="page-header-wrapper">
+    <div class="page-header-text">
+        <h2>Tur Düzenle</h2>
+        <p>Düzenlenen Tur: <span style="color:#0f8b8d; font-weight:700;">@Model.Title</span></p>
+    </div>
+    <a asp-action="TourList" class="btn-back">
+        <i class="fa-solid fa-arrow-left"></i> Geri Dön
+    </a>
+</div>
+
+<form method="post" asp-action="UpdateTour" asp-controller="Tour" asp-route-id="@Model.TourId" id="editTourForm">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="TourId" />
+    <input type="hidden" asp-for="CreatedDate" />
+
+    <div class="edit-grid">
+        <div class="v-card">
+            <div class="form-card-header">
+                <div class="header-icon"><i class="fa-solid fa-pen-nib"></i></div>
+                <div style="font-weight: 700;">Güncel Tur Bilgileri</div>
+            </div>
+
+            <div class="form-body">
+                <div class="form-row">
+                    <div class="form-group-full">
+                        <label class="custom-label" asp-for="Title">Tur Başlığı</label>
+                        <input type="text" asp-for="Title" class="custom-input" id="inTitle" />
+                        <span asp-validation-for="Title" class="text-danger"></span>
+                    </div>
+
+                    <div>
+                        <label class="custom-label" asp-for="CategoryId">Kategori</label>
+                        <select asp-for="CategoryId" class="custom-input" id="inCat" asp-items="ViewBag.Categories">
+                            <option value="">Seçiniz...</option>
+                        </select>
+                        <span asp-validation-for="CategoryId" class="text-danger"></span>
+                    </div>
+
+                    <div>
+                        <label class="custom-label" asp-for="MapLocationTitle">Destinasyon (Şehir)</label>
+                        <input type="text" asp-for="MapLocationTitle" class="custom-input" id="inDest" />
+                        <span asp-validation-for="MapLocationTitle" class="text-danger"></span>
+                    </div>
+
+                    <div>
+                        <label class="custom-label" asp-for="Price">Fiyat (₺)</label>
+                        <input type="number" asp-for="Price" class="custom-input" id="inPrice" step="0.01" />
+                        <span asp-validation-for="Price" class="text-danger"></span>
+                    </div>
+
+                    <div>
+                        <label class="custom-label" asp-for="DayNight">Süre</label>
+                        <input type="text" asp-for="DayNight" class="custom-input" id="inDuration" />
+                        <span asp-validation-for="DayNight" class="text-danger"></span>
+                    </div>
+
+                    <div>
+                        <label class="custom-label" asp-for="Capacity">Kapasite</label>
+                        <input type="number" asp-for="Capacity" class="custom-input" id="inCap" />
+                        <span asp-validation-for="Capacity" class="text-danger"></span>
+                    </div>
+
+                    <div>
+                        <label class="custom-label" asp-for="Badge">Tur Rozeti</label>
+                        <select asp-for="Badge" class="custom-input" id="inBadge">
+                            <option value="">Rozet Yok</option>
+                            <option value="Popüler">Popüler</option>
+                            <option value="Yeni">Yeni</option>
+                            <option value="Fırsat">Fırsat</option>
+                        </select>
+                        <span asp-validation-for="Badge" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group-full">
+                        <label class="custom-label" asp-for="CoverImageUrl">Kapak Görsel URL</label>
+                        <input type="text" asp-for="CoverImageUrl" class="custom-input" id="inImg" />
+                        <span asp-validation-for="CoverImageUrl" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group-full">
+                        <label class="custom-label" asp-for="MapLocationImageUrl">Animasyonlu Rota Haritası (Pixar) Linki</label>
+                        <input type="text" asp-for="MapLocationImageUrl" class="custom-input" placeholder="Yapay zeka ile ürettiğiniz harita görselinin linkini yapıştırın..." />
+                        <span asp-validation-for="MapLocationImageUrl" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group-full">
+                        <label class="custom-label" asp-for="MapLocationDescription">Rota Açıklaması (Keşfetmeye Başla Metni)</label>
+                        <textarea asp-for="MapLocationDescription" class="custom-input" rows="3" placeholder="Bu rotada misafirleri neler bekliyor? Örneğin: İç Anadolu'nun kalbine..."></textarea>
+                        <span asp-validation-for="MapLocationDescription" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group-full">
+                        <label class="custom-label" asp-for="Description">Tur Açıklaması</label>
+                        <textarea asp-for="Description" class="custom-input" id="inDesc" rows="6"></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="status-switch-card">
+                    <div>
+                        <div style="font-weight: 700; font-size: 0.9rem; color: var(--text-main);">Yayın Durumu</div>
+                        <div style="font-size: 0.75rem; color: var(--text-muted);">Aktif ederseniz tur sitede listelenir.</div>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" asp-for="Status" id="inStatus">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div style="margin-top: 10px;">
+                    <button type="submit" class="btn-submit">
+                        <i class="fa-solid fa-floppy-disk" style="margin-right:8px;"></i> Değişiklikleri Kaydet
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="side-panel">
+            <div class="v-card">
+                <div class="form-card-header">
+                    <div style="font-weight:700; font-size:0.85rem;"><i class="fa-solid fa-eye" style="margin-right:8px; color:#a855f7;"></i> Canlı Önizleme</div>
+                </div>
+                <div style="padding: 20px;">
+                    <div style="background: white; border: 1px solid var(--border); border-radius: 15px; overflow: hidden; box-shadow: var(--shadow-sm);">
+                        <img id="pvImg" src="@Model.CoverImageUrl" style="width:100%; height:160px; object-fit:cover;" onerror="this.src='/images/no-image.png'" />
+                        <div style="padding: 15px;">
+                            <div id="pvTitle" style="font-weight: 800; font-size: 1rem; color: var(--text-main); margin-bottom: 5px;">@Model.Title</div>
+                            <div style="display:flex; gap:12px; font-size:0.75rem; color:var(--text-muted); margin-bottom:15px;">
+                                <span id="pvDest">📍 @Model.MapLocationTitle</span>
+                                <span id="pvDuration">⏱ @Model.DayNight</span>
+                            </div>
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <div id="pvPrice" style="font-weight:900; color:#0f8b8d; font-size:1.1rem;">₺@Model.Price.ToString("N0")</div>
+                                <div id="pvStatus" class="tcp-status @(Model.Status ? "active" : "passive")">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="border: 1px solid #fecdd3; background: #fff1f2; border-radius: 18px; padding: 20px; margin-top: 20px;">
+                <div style="font-weight:800; color:#e11d48; font-size:0.9rem; margin-bottom:8px;"><i class="fa-solid fa-trash-can"></i> Turu Sil</div>
+                <p style="font-size:0.75rem; color:#991b1b; line-height:1.4; margin-bottom:15px;">Bu turu sildiğinizde geri alamazsınız.</p>
+                <a asp-action="DeleteTour" asp-route-id="@Model.TourId" style="background:#fb7185; color:white; text-align:center; display:block; padding:10px; border-radius:10px; font-weight:700; text-decoration:none;" onclick="return confirm('Kalıcı olarak silmek istediğinize emin misiniz?')">
+                    Kalıcı Olarak Sil
+                </a>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <script>
+        const inputs = {
+            title: document.getElementById('inTitle'),
+            dest: document.getElementById('inDest'),
+            price: document.getElementById('inPrice'),
+            duration: document.getElementById('inDuration'),
+            img: document.getElementById('inImg'),
+            status: document.getElementById('inStatus')
+        };
+
+        const previews = {
+            title: document.getElementById('pvTitle'),
+            dest: document.getElementById('pvDest'),
+            price: document.getElementById('pvPrice'),
+            duration: document.getElementById('pvDuration'),
+            img: document.getElementById('pvImg'),
+            status: document.getElementById('pvStatus')
+        };
+
+        function updateUI() {
+            previews.title.innerText = inputs.title.value || "Tur Başlığı";
+            previews.dest.innerText = "📍 " + (inputs.dest.value || "Destinasyon");
+            previews.duration.innerText = "⏱ " + (inputs.duration.value || "Süre");
+
+            let valPrice = parseInt(inputs.price.value) || 0;
+            previews.price.innerText = "₺" + valPrice.toLocaleString('tr-TR');
+
+            if(inputs.img.value) previews.img.src = inputs.img.value;
+
+            if(inputs.status.checked) {
+                previews.status.innerText = "● YAYINDA";
+                previews.status.className = "tcp-status active";
+            } else {
+                previews.status.innerText = "● TASLAK";
+                previews.status.className = "tcp-status passive";
+            }
+        }
+
+        // Sayfa ilk yüklendiğinde önizlemeyi doldur
+        document.addEventListener("DOMContentLoaded", updateUI);
+
+        Object.values(inputs).forEach(input => {
+            if(input) {
+                input.addEventListener('input', updateUI);
+                if(input.type === 'checkbox') input.addEventListener('change', updateUI);
+            }
+        });
+    </script>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

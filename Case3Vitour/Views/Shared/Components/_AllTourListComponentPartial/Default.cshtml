@@ -1,0 +1,180 @@
+﻿@using Case3Vitour.Dtos.TourDtos
+@model List<Case3Vitour.Dtos.TourDtos.TourCardDto>
+
+@{
+    int currentPage = (int)(ViewBag.CurrentPage ?? 1);
+    int totalPages = (int)(ViewBag.TotalPages ?? 1);
+    int totalItems = ViewBag.TotalCount ?? 0;
+}
+
+<section class="archieve-tour">
+    <div class="tf-container">
+        <div class="listing-list-car-wrap listing-list-car-wrap-grid3">
+            <form action="/" class="tf-my-listing mb-37">
+                <div class="row align-center">
+                    <div class="col-sm-5">
+                        <p class="showing">Toplam <span class="text-main" style="color: #28a745; font-weight:700;">@totalItems</span> tur arasından <span class="text-main" style="color: #28a745; font-weight:700;">@Model.Count</span> tanesi listeleniyor.</p>
+                    </div>
+                    <div class="col-sm-7 flex-six group-bar-wrap">
+                        <div class="listing-all-wrap">
+                            <div class="flex-three">
+                                <div class="group-select-recently">
+                                    <div class="nice-select" tabindex="0">
+                                        <i class="icon-Vector6"></i><span class="current">Sırala</span>
+                                        <ul class="list">
+                                            <li data-value="" class="option selected focus">Sırala</li>
+                                            <li data-value="price-asc" class="option">Artan Fiyat</li>
+                                            <li data-value="price-desc" class="option">Azalan Fiyat</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="toolbar-list">
+                                    <div class="form-group"><a class="btn-display-listing-grid"><i class="icon-list"></i></a></div>
+                                    <div class="form-group"><a class="btn-display-listing-list active"><i class="icon-Group-1000001297"></i></a></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <div class="listing-list-car-grid mb-60">
+                @foreach (var item in Model)
+                {
+                    <div class="tour-listing box-sd">
+                        <a href="/DefaultTour/TourDetails/@item.TourId" class="tour-listing-image">
+                            <div class="badge-top flex-two">
+                                @if (!string.IsNullOrEmpty(item.Badge) && item.Badge != "Rozet Yok")
+                                {
+                                    string badgeColor = item.Badge == "Popüler" ? "#ef4444" :
+                                    item.Badge == "Yeni" ? "#10b981" :
+                                    item.Badge == "Fırsat" ? "#f59e0b" : "#0f8b8d";
+                                    <span class="feature" style="background-color: @badgeColor; color: white;">@item.Badge</span>
+                                }
+                                else
+                                {
+                                    <span class="feature" style="visibility: hidden;">Gizli</span>
+                                }
+
+                                <div class="badge-media flex-five">
+                                    <span class="media"><i class="icon-Group-1000002909"></i>@item.GalleryCount</span>
+                                </div>
+                            </div>
+                            <img src="@item.CoverImageUrl" style="height:250px; object-fit:cover;" alt="Image">
+                        </a>
+                        <div class="tour-listing-content">
+                            <span class="map"><i class="icon-Vector4"></i>@item.CategoryName</span>
+                            <h3 class="title-tour-list">
+                                <a href="/DefaultTour/TourDetails/@item.TourId">@item.Title</a>
+                            </h3>
+                            <div class="review">
+                                @if (item.ReviewCount == 0)
+                                {
+                                    <span>Henüz Yorum Yapılmamış</span>
+                                }
+                                else
+                                {
+                                    int fullStars = (int)Math.Round(item.ReviewScore);
+                                    int emptyStars = 5 - fullStars;
+
+                                    for (int i = 0; i < fullStars; i++)
+                                    {
+                                        <i class="icon-Star star-filled"></i>
+                                    }
+                                    for (int i = 0; i < emptyStars; i++)
+                                    {
+                                        <i class="icon-Star" style="color:#ddd"></i>
+                                    }
+                                    <span style="font-weight:700; margin-left:5px; color:#102a43;">@item.ReviewScore.ToString("0.0")</span>
+                                    <span style="margin-left:5px;">(@item.ReviewCount Yorum)</span>
+                                }
+                            </div>
+                            <div class="icon-box flex-three">
+                                <div class="icons flex-three">
+                                    <i class="icon-time-left"></i><span>@item.DayNight</span>
+                                </div>
+                                <div class="icons flex-three">
+                                    <i class="icon-user"></i><span>@item.Capacity Kişi</span>
+                                </div>
+                            </div>
+                            <div class="flex-two">
+                                <div class="price-box flex-three">
+                                    <p>Fiyat: <span class="price-sale">@item.Price.ToString("N0") ₺</span></p>
+                                </div>
+                                <div class="icon-bookmark"><i class="icon-Vector-151"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <ul class="tf-pagination flex-five mt-20">
+                        @if (currentPage > 1)
+                        {
+                            <li>
+                                <a href="?page=@(currentPage - 1)&categoryId=@ViewBag.CategoryId"><i class="icon-arrow-left"></i></a>
+                            </li>
+                        }
+
+                        @for (int i = 1; i <= totalPages; i++)
+                        {
+                            <li class="@(i == currentPage ? "active" : "")">
+                                <a href="?page=@i&categoryId=@ViewBag.CategoryId">@i</a>
+                            </li>
+                        }
+
+                        @if (currentPage < totalPages)
+                        {
+                            <li>
+                                <a href="?page=@(currentPage + 1)&categoryId=@ViewBag.CategoryId"><i class="icon-arrow-right"></i></a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .review i {
+        font-size: 14px;
+    }
+
+    .review .star-filled {
+        color: #ffc107;
+    }
+
+    .tf-pagination {
+        gap: 8px;
+    }
+
+        .tf-pagination li {
+            list-style: none;
+        }
+
+            .tf-pagination li a {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                border: 1px solid #ddd;
+                color: #333;
+                text-decoration: none;
+                transition: all 0.3s ease;
+            }
+
+            .tf-pagination li.active a {
+                background-color: #28a745;
+                color: #fff;
+                border-color: #28a745;
+            }
+
+            .tf-pagination li a:hover {
+                background-color: #f5f5f5;
+            }
+</style>

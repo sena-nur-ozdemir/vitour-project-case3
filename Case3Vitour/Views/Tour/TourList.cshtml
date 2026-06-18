@@ -1,0 +1,358 @@
+﻿@model List<Case3Vitour.Dtos.TourDtos.ResultTourDto>
+
+@{
+    ViewData["Title"] = "Turlar";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["ActiveMenu"] = "turlar";
+    ViewData["Breadcrumb"] = "Turlar";
+}
+
+<style>
+    /* ── Üst İstatistikler (Arkadaşındaki 5'li Yapı) ── */
+    .stat-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 15px;
+        margin-bottom: 25px;
+    }
+
+    .stat-chip {
+        background: #fff;
+        padding: 15px 20px;
+        border-radius: var(--radius);
+        border: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        box-shadow: var(--shadow-sm);
+    }
+
+    .stat-chip-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
+    }
+
+    .stat-val {
+        font-size: 1.3rem;
+        font-weight: 800;
+        color: var(--text-main);
+        line-height: 1;
+    }
+
+    .stat-label {
+        font-size: 0.7rem;
+        color: var(--text-muted);
+        font-weight: 700;
+        text-transform: uppercase;
+        margin-top: 4px;
+    }
+
+    /* ── Toolbar & Görünüm Değiştirici ── */
+    .toolbar {
+        background: #fff;
+        padding: 15px 20px;
+        border-radius: var(--radius);
+        border: 1px solid var(--border);
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+
+    .search-input-wrap {
+        position: relative;
+        flex: 1;
+        min-width: 250px;
+    }
+
+        .search-input-wrap i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+
+        .search-input-wrap input {
+            width: 100%;
+            padding: 10px 10px 10px 40px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: var(--bg-canvas);
+            outline: none;
+            font-size: 0.85rem;
+        }
+
+    .filter-select {
+        height: 38px;
+        padding: 0 15px;
+        border-radius: 10px;
+        border: 1px solid var(--border);
+        background: white;
+        font-size: 0.8rem;
+    }
+
+    .view-toggle {
+        display: flex;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .vt-btn {
+        width: 38px;
+        height: 38px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        border: none;
+        background: transparent;
+        color: var(--text-muted);
+        transition: 0.2s;
+    }
+
+        .vt-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
+    /* ── Tablo Stilleri ── */
+    .table-container {
+        background: #fff;
+        border-radius: var(--radius);
+        border: 1px solid var(--border);
+        overflow: hidden;
+    }
+
+    th[data-col] {
+        cursor: pointer;
+        user-select: none;
+        padding: 15px;
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        color: var(--text-muted);
+    }
+
+        th[data-col]:hover {
+            color: var(--primary);
+        }
+
+    /* ── Kart Stilleri ── */
+    .cards-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 20px;
+    }
+
+    .tour-card {
+        background: white;
+        border-radius: 15px;
+        border: 1px solid var(--border);
+        overflow: hidden;
+        transition: 0.3s;
+        display: flex;
+        flex-direction: column;
+    }
+
+        .tour-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-md);
+        }
+
+    .tc-img {
+        height: 160px;
+        width: 100%;
+        object-fit: cover;
+    }
+
+    /* ── Toplu İşlem Barı ── */
+    .bulk-bar {
+        display: none;
+        align-items: center;
+        gap: 15px;
+        padding: 12px 20px;
+        background: #eff6ff;
+        border: 1px solid rgba(15, 139, 141, 0.2);
+        border-radius: 12px;
+        margin-bottom: 15px;
+    }
+
+        .bulk-bar.visible {
+            display: flex;
+        }
+</style>
+
+<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:25px;">
+    <div>
+        <h2 style="font-weight: 800; color: var(--text-main);">Tur Yönetimi</h2>
+        <p style="color: var(--text-muted); font-size: 0.85rem;">Tüm rotaları buradan yönetebilir ve önizleyebilirsiniz.</p>
+    </div>
+    <a asp-action="CreateTour" asp-controller="Tour"
+       style="display: inline-flex; align-items: center; gap: 8px; background-color: #0f8b8d; color: #ffffff !important; padding: 12px 25px; border-radius: 12px; font-weight: 700; text-decoration: none; cursor: pointer; box-shadow: 0 4px 6px rgba(15, 139, 141, 0.2); transition: 0.3s;">
+        <i class="fa-solid fa-plus-circle"></i> Yeni Tur Ekle
+    </a>
+</div>
+
+<div class="stat-row">
+    <div class="stat-chip">
+        <div class="stat-chip-icon" style="background:#e0f2fe; color:#0369a1;"><i class="fa-solid fa-map"></i></div>
+        <div><span class="stat-val">@Model.Count</span><br><span class="stat-label">Toplam</span></div>
+    </div>
+    <div class="stat-chip">
+        <div class="stat-chip-icon" style="background:#dcfce7; color:#15803d;"><i class="fa-solid fa-eye"></i></div>
+        <div><span class="stat-val">@Model.Count(x => x.Status)</span><br><span class="stat-label">Aktif</span></div>
+    </div>
+    <div class="stat-chip">
+        <div class="stat-chip-icon" style="background:#fef3c7; color:#b45309;"><i class="fa-solid fa-tag"></i></div>
+        <div><span class="stat-val">₺@(Model.Any() ? Model.Average(x => x.Price).ToString("N0") : "0")</span><br><span class="stat-label">Ortalama</span></div>
+    </div>
+</div>
+
+<div class="bulk-bar" id="bulkBar">
+    <span style="font-weight: 600; color: var(--primary); flex: 1;"><span id="bulkCount">0</span> tur seçildi</span>
+    <button class="nav-link" style="background:#ef4444; color:white; border:none; padding:8px 15px; border-radius:8px; cursor:pointer;" onclick="bulkDelete()">Seçilenleri Sil</button>
+    <button class="nav-link" style="background:var(--border); padding:8px 15px; border-radius:8px; border:none; cursor:pointer;" onclick="clearSelection()">İptal</button>
+</div>
+
+<div class="toolbar">
+    <div class="search-input-wrap">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" id="tourSearch" placeholder="Tur adı veya açıklama ara...">
+    </div>
+    <select class="filter-select" id="statusFilter">
+        <option value="all">Tüm Durumlar</option>
+        <option value="active">Aktif</option>
+        <option value="inactive">Pasif</option>
+    </select>
+    <select class="filter-select" id="badgeFilter">
+        <option value="all">Tüm Rozetler</option>
+        <option value="Popüler">Popüler</option>
+        <option value="Yeni">Yeni</option>
+        <option value="Fırsat">Fırsat</option>
+    </select>
+
+    <div class="view-toggle">
+        <button class="vt-btn active" id="btnTable" onclick="setView('table')"><i class="fa-solid fa-list"></i></button>
+        <button class="vt-btn" id="btnGrid" onclick="setView('grid')"><i class="fa-solid fa-grip"></i></button>
+    </div>
+</div>
+
+<div id="tableView" class="table-container">
+    <table style="width: 100%; border-collapse: collapse;">
+        <thead>
+            <tr style="text-align: left; background: var(--bg-soft); border-bottom: 2px solid var(--border);">
+                <th style="padding: 15px; width: 40px;"><input type="checkbox" id="selectAll"></th>
+                <th data-col="title">Tur Bilgisi</th>
+                <th data-col="price">Fiyat</th>
+                <th data-col="status">Durum</th>
+                <th style="text-align: right; padding-right: 20px;">İşlemler</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody">
+            @foreach (var item in Model)
+            {
+                <tr class="tour-row" data-title="@item.Title.ToLower()" data-status="@(item.Status ? "active" : "inactive")" data-badge="@(item.Badge ?? "none")">
+                    <td style="padding: 15px;"><input type="checkbox" class="row-cb" value="@item.TourId"></td>
+                    <td style="padding: 15px;">
+                        <div style="display:flex; align-items:center; gap:10px;">
+                            <img src="@item.CoverImageUrl" style="width:45px; height:35px; border-radius:6px; object-fit:cover;" onerror="this.src='/images/no-image.png'" />
+                            <div>
+                                <div style="font-weight:700; color:var(--text-main);">@item.Title</div>
+                                <div style="font-size:0.7rem; color:var(--text-muted);">@item.DayNight | @item.Capacity Kişi</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td style="padding: 15px; font-weight:700; color:var(--primary);">₺@item.Price.ToString("N0")</td>
+                    <td style="padding: 15px;">
+                        <span style="font-size:0.7rem; font-weight:800; color:@(item.Status ? "#10b981" : "#ef4444")">
+                            @(item.Status ? "AKTİF" : "PASİF")
+                        </span>
+                    </td>
+                    <td style="padding: 15px; text-align: right;">
+                        <a asp-action="UpdateTour" asp-route-id="@item.TourId" style="color:var(--primary); margin-right:10px;"><i class="fa-solid fa-pen"></i></a>
+                        <a asp-action="DeleteTour" asp-route-id="@item.TourId" style="color:#ef4444;" onclick="return confirm('Silsin mi?')"><i class="fa-solid fa-trash"></i></a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<div id="gridView" style="display:none;">
+    <div class="cards-grid">
+        @foreach (var item in Model)
+        {
+            <div class="tour-card card-item" data-title="@item.Title.ToLower()" data-status="@(item.Status ? "active" : "inactive")" data-badge="@(item.Badge ?? "none")">
+                <img src="@item.CoverImageUrl" class="tc-img" onerror="this.src='/images/no-image.png'" />
+                <div style="padding: 15px; flex: 1;">
+                    <h4 style="font-weight: 800; font-size: 0.9rem; margin-bottom: 8px;">@item.Title</h4>
+                    <div style="font-size: 0.75rem; color: var(--text-muted); display: flex; gap: 10px;">
+                        <span><i class="fa-solid fa-clock"></i> @item.DayNight</span>
+                        <span><i class="fa-solid fa-users"></i> @item.Capacity</span>
+                    </div>
+                </div>
+                <div style="padding: 12px 15px; background: #fafafa; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-weight: 800; color: var(--primary);">₺@item.Price.ToString("N0")</span>
+                    <div>
+                        <a asp-action="UpdateTour" asp-route-id="@item.TourId" style="color:var(--text-muted); margin-right:8px;"><i class="fa-solid fa-pen"></i></a>
+                        <a asp-action="DeleteTour" asp-route-id="@item.TourId" style="color:#ef4444;"><i class="fa-solid fa-trash"></i></a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // ── 1. Görünüm Değiştirme (Tablo / Kart) ──
+        function setView(mode) {
+            const isTable = mode === 'table';
+            document.getElementById('tableView').style.display = isTable ? 'block' : 'none';
+            document.getElementById('gridView').style.display = isTable ? 'none' : 'block';
+            document.getElementById('btnTable').classList.toggle('active', isTable);
+            document.getElementById('btnGrid').classList.toggle('active', !isTable);
+        }
+
+        // ── 2. Canlı Filtreleme ──
+        const searchInput = document.getElementById('tourSearch');
+        const statusFilter = document.getElementById('statusFilter');
+        const badgeFilter = document.getElementById('badgeFilter');
+
+        function filterData() {
+            const q = searchInput.value.toLowerCase();
+            const s = statusFilter.value;
+            const b = badgeFilter.value;
+
+            document.querySelectorAll('.tour-row, .card-item').forEach(el => {
+                const matchQ = el.dataset.title.includes(q);
+                const matchS = s === 'all' || el.dataset.status === s;
+                const matchB = b === 'all' || el.dataset.badge === b;
+                el.style.display = (matchQ && matchS && matchB) ? '' : 'none';
+            });
+        }
+
+        searchInput.addEventListener('keyup', filterData);
+        statusFilter.addEventListener('change', filterData);
+        badgeFilter.addEventListener('change', filterData);
+
+        // ── 3. Toplu Seçim ──
+        const selectAll = document.getElementById('selectAll');
+        const bulkBar = document.getElementById('bulkBar');
+        const bulkCount = document.getElementById('bulkCount');
+
+        selectAll.addEventListener('change', e => {
+            document.querySelectorAll('.row-cb').forEach(cb => cb.checked = e.target.checked);
+            const count = document.querySelectorAll('.row-cb:checked').length;
+            bulkCount.textContent = count;
+            bulkBar.classList.toggle('visible', count > 0);
+        });
+    </script>
+}

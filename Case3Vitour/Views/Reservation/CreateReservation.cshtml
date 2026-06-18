@@ -1,0 +1,470 @@
+﻿@model Case3Vitour.Dtos.ReservationDtos.CreateReservationDto
+
+@{
+    ViewData["Title"] = "Rezervasyon Ekle";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["ActiveMenu"] = "rezervasyonlar";
+    ViewData["Breadcrumb"] = "Rezervasyonlar / Yeni Ekle";
+
+    var tours = ViewBag.Tours as List<Case3Vitour.Dtos.TourDtos.ResultTourDto> ?? new List<Case3Vitour.Dtos.TourDtos.ResultTourDto>();
+}
+
+<style>
+    .page-grid {
+        display: grid;
+        grid-template-columns: 1fr 320px;
+        gap: 24px;
+        align-items: start;
+    }
+
+    .v-card {
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+        margin-bottom: 20px;
+    }
+
+    .v-card-header {
+        padding: 18px 24px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .v-card-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 9px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        flex-shrink: 0;
+    }
+
+    .v-card-title {
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--t1);
+    }
+
+    .v-card-sub {
+        font-size: 12px;
+        color: var(--t3);
+        margin-top: 2px;
+    }
+
+    .v-card-body {
+        padding: 24px;
+    }
+
+    .form-grid-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+    }
+
+    .form-group {
+        margin-bottom: 18px;
+    }
+
+        .form-group:last-child {
+            margin-bottom: 0;
+        }
+
+    label {
+        display: block;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--t2);
+        margin-bottom: 6px;
+    }
+
+        label span.req {
+            color: #ef4444;
+            margin-left: 2px;
+        }
+
+    .form-control {
+        width: 100%;
+        height: 42px;
+        padding: 0 14px;
+        background: #fff;
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius-sm);
+        font-family: inherit;
+        font-size: 13.5px;
+        color: var(--t1);
+        outline: none;
+        transition: border-color .18s, box-shadow .18s;
+    }
+
+        .form-control:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-glow);
+        }
+
+        .form-control.select-ctrl {
+            appearance: none;
+            cursor: pointer;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            padding-right: 36px;
+        }
+
+    .form-hint {
+        font-size: 11.5px;
+        color: var(--t3);
+        margin-top: 5px;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .field-error {
+        font-size: 11.5px;
+        color: #ef4444;
+        margin-top: 5px;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .input-group {
+        display: flex;
+        align-items: stretch;
+    }
+
+        .input-group .form-control {
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+            flex: 1;
+        }
+
+    .input-prefix {
+        display: flex;
+        align-items: center;
+        padding: 0 14px;
+        background: #f8fafc;
+        border: 1.5px solid var(--border);
+        border-right: none;
+        border-radius: var(--radius-sm) 0 0 var(--radius-sm);
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--t3);
+        white-space: nowrap;
+    }
+
+    .form-footer {
+        padding: 16px 24px;
+        border-top: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 10px;
+        background: #f8fafc;
+    }
+
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 0 20px;
+        height: 40px;
+        border-radius: var(--radius-sm);
+        font-family: inherit;
+        font-size: 13.5px;
+        font-weight: 600;
+        cursor: pointer;
+        border: none;
+        text-decoration: none;
+        transition: all .18s;
+        white-space: nowrap;
+    }
+
+    .btn-primary {
+        background: var(--accent);
+        color: #fff;
+        box-shadow: 0 2px 8px var(--accent-glow);
+    }
+
+        .btn-primary:hover {
+            background: #0369a1;
+            transform: translateY(-1px);
+        }
+
+    .btn-ghost {
+        background: transparent;
+        border: 1.5px solid var(--border);
+        color: var(--t2);
+    }
+
+        .btn-ghost:hover {
+            background: var(--bg-hover);
+            color: var(--t1);
+        }
+
+    /* ── Özet kartı ── */
+    .summary-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 0;
+        border-bottom: 1px solid #f1f5f9;
+        font-size: 13px;
+    }
+
+        .summary-row:last-child {
+            border-bottom: none;
+        }
+
+    .sum-lbl {
+        color: var(--t3);
+    }
+
+    .sum-val {
+        font-weight: 700;
+        color: var(--t1);
+        text-align: right;
+    }
+
+    /* ── İpuçları ── */
+    .tip-row {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        margin-bottom: 14px;
+    }
+
+        .tip-row:last-child {
+            margin-bottom: 0;
+        }
+
+    .tip-icon {
+        width: 28px;
+        height: 28px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        flex-shrink: 0;
+    }
+
+    .tip-text {
+        font-size: 12.5px;
+        color: var(--t2);
+        line-height: 1.5;
+    }
+
+        .tip-text strong {
+            color: var(--t1);
+        }
+
+    .validation-summary-errors {
+        background: rgba(239,68,68,.06);
+        border: 1px solid rgba(239,68,68,.2);
+        padding: 15px;
+        border-radius: var(--radius-sm);
+        margin-bottom: 20px;
+        color: #b91c1c;
+        font-size: 13px;
+    }
+
+        .validation-summary-errors ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+    @@media(max-width:900px) {
+        .page-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .form-grid-2 {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px;">
+    <div>
+        <h1 style="font-size:22px;font-weight:800;color:var(--t1);">Rezervasyon Ekle</h1>
+        <p style="font-size:13px;color:var(--t3);margin-top:3px;">Sisteme yeni bir müşteri kaydı girin.</p>
+    </div>
+    <a asp-action="ReservationList" asp-controller="Reservation" class="btn btn-ghost">
+        <i class="fa-solid fa-arrow-left"></i> Listeye Dön
+    </a>
+</div>
+
+<form method="post" id="mainForm">
+    @Html.AntiForgeryToken()
+
+    <div class="page-grid">
+        <div>
+            @if (!ViewData.ModelState.IsValid)
+            {
+                <div style="background:#fef2f2; border:1px solid #fecaca; padding:15px; border-radius:8px; margin-bottom:20px; color:#b91c1c;">
+                    <div style="font-weight:700; margin-bottom:5px;"><i class="fa-solid fa-circle-exclamation"></i> Hata:</div>
+                    <div asp-validation-summary="All" style="font-size: 13px;"></div>
+                </div>
+            }
+
+            <div class="v-card">
+                <div class="v-card-header">
+                    <div class="v-card-icon" style="background:rgba(13,148,136,.1);color:var(--accent);"><i class="fa-solid fa-user"></i></div>
+                    <div>
+                        <div class="v-card-title">Müşteri Bilgileri</div>
+                        <div class="v-card-sub">Kişisel ve iletişim bilgileri</div>
+                    </div>
+                </div>
+                <div class="v-card-body">
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label asp-for="NameSurname">Ad Soyad <span class="req">*</span></label>
+                            <input asp-for="NameSurname" class="form-control" placeholder="Ahmet Yılmaz" id="inpName" />
+                            <span asp-validation-for="NameSurname" class="field-error"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Email">E-posta <span class="req">*</span></label>
+                            <input asp-for="Email" class="form-control" type="email" placeholder="ornek@mail.com" id="inpEmail" />
+                            <span asp-validation-for="Email" class="field-error"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="v-card">
+                <div class="v-card-header">
+                    <div class="v-card-icon" style="background:rgba(124,58,237,.1);color:#7c3aed;"><i class="fa-solid fa-plane"></i></div>
+                    <div>
+                        <div class="v-card-title">Rezervasyon Detayları</div>
+                        <div class="v-card-sub">Tur seçimi ve kişi sayısı</div>
+                    </div>
+                </div>
+                <div class="v-card-body">
+                    <div class="form-group">
+                        <label asp-for="TourId">Tur Seçimi <span class="req">*</span></label>
+                        <select asp-for="TourId" class="form-control select-ctrl" id="inpTour" onchange="calcPrice()">
+                            <option value="">— Tur seçin —</option>
+                            @foreach (var t in tours)
+                            {
+                                <option value="@t.TourId" data-title="@t.Title" data-price="@t.Price">@t.Title (₺@t.Price)</option>
+                            }
+                        </select>
+                        <span asp-validation-for="TourId" class="field-error"></span>
+                    </div>
+
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label asp-for="PersonCount">Kişi Sayısı <span class="req">*</span></label>
+                            <div class="input-group">
+                                <span class="input-prefix"><i class="fa-solid fa-users"></i></span>
+                                <input asp-for="PersonCount" class="form-control" type="number" min="1" max="100" value="1" id="inpPerson" oninput="calcPrice()" />
+                            </div>
+                            <span asp-validation-for="PersonCount" class="field-error"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Toplam Tutar</label>
+                            <div class="input-group">
+                                <span class="input-prefix">₺</span>
+                                <input class="form-control" type="text" id="inpPriceDisplay" readonly placeholder="0.00" style="background:#f8fafc; font-weight:700;" />
+                            </div>
+                            <div class="form-hint"><i class="fa-solid fa-circle-info"></i> Tutar sistem tarafından otomatik hesaplanır.</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-footer">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fa-solid fa-check"></i> Rezervasyonu Tamamla
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <div class="v-card" style="margin-bottom:20px;">
+                <div class="v-card-header">
+                    <div class="v-card-icon" style="background:rgba(245,158,11,.1);color:#f59e0b;"><i class="fa-solid fa-receipt"></i></div>
+                    <div>
+                        <div class="v-card-title">Canlı Özet</div>
+                    </div>
+                </div>
+                <div class="v-card-body">
+                    <div class="summary-row"><span class="sum-lbl">Müşteri</span>       <span class="sum-val" id="sumName">—</span></div>
+                    <div class="summary-row"><span class="sum-lbl">Tur</span>           <span class="sum-val" id="sumTour">—</span></div>
+                    <div class="summary-row"><span class="sum-lbl">Kişi Sayısı</span>  <span class="sum-val" id="sumPerson">1 kişi</span></div>
+                    <div class="summary-row" style="padding-top:14px;">
+                        <span class="sum-lbl" style="font-weight:700;color:var(--t1);">Toplam</span>
+                        <span style="font-size:18px;font-weight:800;color:#16a34a;" id="sumPrice">0 ₺</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="v-card">
+                <div class="v-card-header">
+                    <div class="v-card-icon" style="background:rgba(13,148,136,.1);color:var(--accent);"><i class="fa-solid fa-lightbulb"></i></div>
+                    <div><div class="v-card-title">İpuçları</div></div>
+                </div>
+                <div class="v-card-body">
+                    <div class="tip-row">
+                        <div class="tip-icon" style="background:rgba(124,58,237,.1);color:#7c3aed;"><i class="fa-solid fa-key"></i></div>
+                        <div class="tip-text"><strong>Rezervasyon Kodu</strong> sistem tarafından (8 haneli) otomatik ve benzersiz olarak üretilir.</div>
+                    </div>
+                    <div class="tip-row">
+                        <div class="tip-icon" style="background:rgba(22,163,74,.1);color:#16a34a;"><i class="fa-solid fa-calculator"></i></div>
+                        <div class="tip-text">Tutar (Fiyat x Kişi) veritabanına kayıt sırasında <strong>güvenlik için arka planda</strong> (Controller) hesaplanır.</div>
+                    </div>
+                    <div class="tip-row">
+                        <div class="tip-icon" style="background:rgba(239,68,68,.1);color:#ef4444;"><i class="fa-solid fa-ban"></i></div>
+                        <div class="tip-text">Girdiğiniz kişi sayısı tur kapasitesini aşıyorsa sistem otomatik olarak uyarı verecektir.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        var inpName   = document.getElementById('inpName');
+        var inpTour   = document.getElementById('inpTour');
+        var inpPerson = document.getElementById('inpPerson');
+        var inpPriceDisplay = document.getElementById('inpPriceDisplay');
+
+        function calcPrice() {
+            var opt    = inpTour.options[inpTour.selectedIndex];
+            var price  = parseFloat(opt && opt.dataset.price ? opt.dataset.price : 0) || 0;
+            var person = parseInt(inpPerson.value) || 0;
+
+            var total = price * person;
+
+            // Sadece ekranda gösterim amaçlı
+            inpPriceDisplay.value = total > 0 ? total.toLocaleString('tr-TR') : "0";
+
+            updateSummary(total);
+        }
+
+        function updateSummary(total) {
+            var opt    = inpTour.options[inpTour.selectedIndex];
+            var tName  = opt && opt.value ? (opt.dataset.title || opt.text) : null;
+            var person = parseInt(inpPerson.value) || 0;
+            var name   = inpName.value.trim();
+
+            document.getElementById('sumName').textContent = name || '—';
+            document.getElementById('sumTour').textContent = tName || '—';
+            document.getElementById('sumPerson').textContent = person > 0 ? person + ' kişi' : '—';
+            document.getElementById('sumPrice').textContent = total > 0 ? total.toLocaleString('tr-TR') + ' ₺' : '0 ₺';
+        }
+
+        inpName.addEventListener('input', function() { calcPrice(); });
+
+        // Sayfa yüklendiğinde hesapla (Validasyon hatalarından geri dönüldüğünde doluysa)
+        calcPrice();
+    </script>
+}
