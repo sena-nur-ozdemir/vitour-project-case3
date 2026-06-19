@@ -1,5 +1,5 @@
 if (document.getElementById('map')){
-    mapboxgl.accessToken = 'pk.eyJ1IjoidGhlbWVzZmxhdCIsImEiOiJjbGt3NGxtYncwa2F2M21saHM3M21uM3h2In0.9NbzjykXil1nELxQ1V8rkA';
+    mapboxgl.accessToken = 'your_mapbox_access_token_here';
         const map = new mapboxgl.Map({
         container: 'map',
         style: 'mapbox://styles/mapbox/light-v11',
@@ -31,7 +31,7 @@ if (document.getElementById('map')){
 }
 
 if (document.getElementById('map2')) {
-    mapboxgl.accessToken = 'pk.eyJ1IjoidGhlbWVzZmxhdCIsImEiOiJjbGt3NGxtYncwa2F2M21saHM3M21uM3h2In0.9NbzjykXil1nELxQ1V8rkA';
+    mapboxgl.accessToken = 'your_mapbox_access_token_here';
         const map2 = new mapboxgl.Map({
         container: 'map2',
         style: 'mapbox://styles/mapbox/light-v11',
@@ -62,7 +62,7 @@ if (document.getElementById('map2')) {
     }
 }
 if (document.getElementById('map3')) {
-    mapboxgl.accessToken = 'pk.eyJ1IjoidGhlbWVzZmxhdCIsImEiOiJjbGt3NGxtYncwa2F2M21saHM3M21uM3h2In0.9NbzjykXil1nELxQ1V8rkA';
+    mapboxgl.accessToken = 'your_mapbox_access_token_here';
         const map3 = new mapboxgl.Map({
         container: 'map3',
         style: 'mapbox://styles/mapbox/light-v11',
